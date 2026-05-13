@@ -1,3 +1,40 @@
+<?php
+// Load questions from data/questions.json; fall back to built-in set if missing/empty.
+$_qFile = __DIR__ . '/data/questions.json';
+$_qData = [];
+if (file_exists($_qFile)) {
+    $_loaded = json_decode(file_get_contents($_qFile), true);
+    if (is_array($_loaded) && count($_loaded) > 0) {
+        $_qData = $_loaded;
+    }
+}
+if (empty($_qData)) {
+    // Built-in fallback — mirrors the original 10 questions
+    $_qData = [
+      ['id'=>'q01','category'=>'Animals','speak'=>'Touch the cat!','hint'=>'Cat','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Cat','correct'=>true,'bg'=>'#FFF0F0','emoji'=>'🐱','image'=>null],['label'=>'Dog','correct'=>false,'bg'=>'#F0F4FF','emoji'=>'🐶','image'=>null],['label'=>'Rabbit','correct'=>false,'bg'=>'#F0FFF4','emoji'=>'🐰','image'=>null],['label'=>'Duck','correct'=>false,'bg'=>'#FFFBF0','emoji'=>'🦆','image'=>null]]],
+      ['id'=>'q02','category'=>'Animals','speak'=>'Touch the dog!','hint'=>'Dog','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Cat','correct'=>false,'bg'=>'#FFF0F0','emoji'=>'🐱','image'=>null],['label'=>'Dog','correct'=>true,'bg'=>'#F0F4FF','emoji'=>'🐶','image'=>null],['label'=>'Bird','correct'=>false,'bg'=>'#F0FFF4','emoji'=>'🐦','image'=>null],['label'=>'Fish','correct'=>false,'bg'=>'#F0FFFF','emoji'=>'🐠','image'=>null]]],
+      ['id'=>'q03','category'=>'Colors','speak'=>'Touch the red color!','hint'=>'Red','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Red','correct'=>true,'bg'=>'#FFF0F0','emoji'=>'🔴','image'=>null],['label'=>'Blue','correct'=>false,'bg'=>'#F0F4FF','emoji'=>'🔵','image'=>null],['label'=>'Yellow','correct'=>false,'bg'=>'#FFFDF0','emoji'=>'🟡','image'=>null],['label'=>'Green','correct'=>false,'bg'=>'#F0FFF4','emoji'=>'🟢','image'=>null]]],
+      ['id'=>'q04','category'=>'Shapes','speak'=>'Touch the circle!','hint'=>'Circle','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Circle','correct'=>true,'bg'=>'#FFF0F8','emoji'=>'⭕','image'=>null],['label'=>'Square','correct'=>false,'bg'=>'#F0F0F0','emoji'=>'⬛','image'=>null],['label'=>'Triangle','correct'=>false,'bg'=>'#FFF8F0','emoji'=>'🔺','image'=>null],['label'=>'Diamond','correct'=>false,'bg'=>'#F0FCFF','emoji'=>'💠','image'=>null]]],
+      ['id'=>'q05','category'=>'Food','speak'=>'Touch the apple!','hint'=>'Apple','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Apple','correct'=>true,'bg'=>'#FFF0F0','emoji'=>'🍎','image'=>null],['label'=>'Banana','correct'=>false,'bg'=>'#FFFDF0','emoji'=>'🍌','image'=>null],['label'=>'Grapes','correct'=>false,'bg'=>'#F8F0FF','emoji'=>'🍇','image'=>null],['label'=>'Orange','correct'=>false,'bg'=>'#FFF8F0','emoji'=>'🍊','image'=>null]]],
+      ['id'=>'q06','category'=>'Numbers','speak'=>'Touch the number two!','hint'=>'Two','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'One','correct'=>false,'bg'=>'#FFF0F0','emoji'=>'1️⃣','image'=>null],['label'=>'Two','correct'=>true,'bg'=>'#F0F4FF','emoji'=>'2️⃣','image'=>null],['label'=>'Three','correct'=>false,'bg'=>'#F0FFF4','emoji'=>'3️⃣','image'=>null],['label'=>'Four','correct'=>false,'bg'=>'#FFFBF0','emoji'=>'4️⃣','image'=>null]]],
+      ['id'=>'q07','category'=>'Animals','speak'=>'Touch the elephant!','hint'=>'Elephant','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Elephant','correct'=>true,'bg'=>'#F4F0FF','emoji'=>'🐘','image'=>null],['label'=>'Lion','correct'=>false,'bg'=>'#FFF8E0','emoji'=>'🦁','image'=>null],['label'=>'Bear','correct'=>false,'bg'=>'#FFF4EC','emoji'=>'🐻','image'=>null],['label'=>'Fox','correct'=>false,'bg'=>'#FFF2EC','emoji'=>'🦊','image'=>null]]],
+      ['id'=>'q08','category'=>'Colors','speak'=>'Touch the blue color!','hint'=>'Blue','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Red','correct'=>false,'bg'=>'#FFF0F0','emoji'=>'🔴','image'=>null],['label'=>'Blue','correct'=>true,'bg'=>'#F0F4FF','emoji'=>'🔵','image'=>null],['label'=>'Orange','correct'=>false,'bg'=>'#FFF8F0','emoji'=>'🟠','image'=>null],['label'=>'Purple','correct'=>false,'bg'=>'#F8F0FF','emoji'=>'🟣','image'=>null]]],
+      ['id'=>'q09','category'=>'Food','speak'=>'Touch the banana!','hint'=>'Banana','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Strawberry','correct'=>false,'bg'=>'#FFF0F0','emoji'=>'🍓','image'=>null],['label'=>'Banana','correct'=>true,'bg'=>'#FFFDF0','emoji'=>'🍌','image'=>null],['label'=>'Peach','correct'=>false,'bg'=>'#FFF8F0','emoji'=>'🍑','image'=>null],['label'=>'Cherry','correct'=>false,'bg'=>'#FFF0F5','emoji'=>'🍒','image'=>null]]],
+      ['id'=>'q10','category'=>'Shapes','speak'=>'Touch the star!','hint'=>'Star','image'=>null,'audio'=>null,
+       'options'=>[['label'=>'Star','correct'=>true,'bg'=>'#FFFDF0','emoji'=>'⭐','image'=>null],['label'=>'Heart','correct'=>false,'bg'=>'#FFF0F0','emoji'=>'❤️','image'=>null],['label'=>'Moon','correct'=>false,'bg'=>'#F0F0FF','emoji'=>'🌙','image'=>null],['label'=>'Cloud','correct'=>false,'bg'=>'#F0F8FF','emoji'=>'☁️','image'=>null]]],
+    ];
+}
+$_questionsJson = json_encode($_qData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,6 +165,31 @@
     }
     .start-btn:active { transform: scale(.96); }
 
+    /* ── MODE SELECTOR ──────────────────────────── */
+    .mode-buttons { display:flex; gap:10px; }
+    .mode-btn {
+      flex:1; padding:14px 10px;
+      border-radius:16px; border:3px solid #eee;
+      background:white; cursor:pointer;
+      transition:all .2s;
+      display:flex; flex-direction:column; align-items:center; gap:5px;
+      font-family:'Fredoka One',cursive; font-size:.95rem; color:#aaa;
+      line-height:1.2;
+    }
+    .mode-btn small {
+      font-family:'Nunito',sans-serif; font-size:.72rem;
+      color:#bbb; font-weight:700; display:block;
+    }
+    .mode-btn.active { border-color:var(--sky); background:#f0fffe; color:#2bbcb3; }
+    .mode-btn.active small { color:#4ECDC4; }
+    .mode-pill {
+      border-radius:99px; padding:4px 14px;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.75rem;
+      white-space:nowrap;
+    }
+    .mode-pill-correct { background:rgba(255,107,107,.15); color:var(--coral); }
+    .mode-pill-free    { background:rgba(78,205,196,.15);  color:#2bbcb3; }
+
     /* ── QUIZ SCREEN ─────────────────────────────── */
     #quiz {
       background: linear-gradient(160deg, #E0F7FF 0%, #FFF5E4 60%, #FFE8F5 100%);
@@ -196,6 +258,12 @@
       from { transform: scale(1); }
       to   { transform: scale(1.12); }
     }
+    .question-img {
+      max-width: 100px; max-height: 72px;
+      object-fit: contain;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
     .question-text {
       font-family: 'Fredoka One', cursive;
       font-size: clamp(1.4rem, 3.5vw, 2.1rem);
@@ -249,6 +317,13 @@
       line-height: 1;
       transition: transform .2s;
     }
+    .option-image {
+      width: clamp(70px, 18vw, 120px);
+      height: clamp(70px, 18vw, 120px);
+      object-fit: contain;
+      border-radius: 14px;
+      transition: transform .2s;
+    }
     .option-label {
       font-family: 'Fredoka One', cursive;
       font-size: clamp(.9rem, 2.5vw, 1.3rem);
@@ -266,7 +341,8 @@
       40%  { transform: scale(1.15); }
       100% { transform: scale(1.05); }
     }
-    .option-card.correct .option-emoji { transform: scale(1.2); }
+    .option-card.correct .option-emoji,
+    .option-card.correct .option-image { transform: scale(1.2); }
     .option-card.wrong {
       border-color: #e74c3c;
       background: #fff5f5;
@@ -381,6 +457,118 @@
       font-family: 'Fredoka One', cursive;
       font-size: 1.6rem; color: var(--coral);
     }
+
+    /* ══ RESPONSIVE — TOUCH / MOBILE / TABLET ══════════
+       Setup: allow vertical scroll when card is taller
+       than the viewport (common on small phones).
+    ═══════════════════════════════════════════════════ */
+    #setup { overflow-y: auto; justify-content: flex-start; overscroll-behavior-y: contain; }
+    .setup-card { margin: auto; }
+
+    /* ── ≤ 480px  (phones) ─────────────────────────── */
+    @media (max-width: 480px) {
+      .setup-card { padding: 24px 20px; border-radius: 24px; }
+      .setup-card h1 { font-size: 1.8rem; margin-bottom: 4px; }
+      .setup-card .subtitle { font-size: .88rem; margin-bottom: 18px; }
+      .field-wrap { margin-bottom: 14px; }
+      .age-buttons { gap: 8px; margin-bottom: 18px; }
+      .age-btn { width: 64px; height: 64px; font-size: 1.3rem; }
+      .mode-buttons { gap: 8px; }
+      .mode-btn { padding: 11px 7px; font-size: .85rem; border-radius: 14px; }
+      .mode-btn small { font-size: .66rem; }
+      .start-btn { padding: 15px 32px; font-size: 1.2rem; border-radius: 14px; }
+
+      #quiz { padding: 10px; }
+      .progress-wrap { gap: 8px; margin-bottom: 10px; }
+      .progress-bar { height: 10px; }
+      .progress-label { font-size: .85rem; }
+      .stars-score { display: none; }
+      .mode-pill { font-size: .68rem; padding: 3px 10px; }
+      .question-card { padding: 12px 14px; gap: 10px; margin-bottom: 12px; border-radius: 20px; }
+      .speak-btn { width: 50px; height: 50px; font-size: 1.4rem; }
+      .question-img { max-width: 56px; max-height: 48px; }
+      .options-grid { gap: 10px; }
+      .option-card { padding: 12px 8px; min-height: 118px; border-radius: 20px; border-width: 3px; gap: 6px; }
+
+      .complete-card { padding: 28px 18px; border-radius: 28px; }
+      .complete-emoji { font-size: 3.5rem; }
+      .complete-title { font-size: 1.8rem; }
+      .score-display { font-size: 2.4rem; margin: 12px 0; }
+      .score-stars { font-size: 1.8rem; margin-bottom: 16px; }
+      .complete-btns { gap: 10px; }
+      .btn-retry, .btn-new { padding: 14px 22px; font-size: 1rem; border-radius: 14px; }
+      .feedback-msg { padding: 16px 24px; font-size: 1.4rem; border-radius: 18px; width: 88%; }
+    }
+
+    /* ── ≤ 360px  (very small phones) ─────────────── */
+    @media (max-width: 360px) {
+      .setup-card { padding: 20px 16px; }
+      .age-btn { width: 58px; height: 58px; font-size: 1.2rem; }
+      .option-card { min-height: 108px; padding: 10px 6px; }
+      .complete-card { padding: 22px 14px; }
+      .complete-btns { flex-direction: column; }
+      .btn-retry, .btn-new { width: 100%; }
+    }
+
+    /* ── 481–768px  (large phones / small tablets) ── */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .setup-card { padding: 32px 28px; }
+      .complete-card { padding: 36px 32px; }
+      #quiz { padding: 14px; }
+      .option-card { min-height: 130px; }
+    }
+
+    /* ── Landscape phone: height ≤ 520px ───────────── */
+    @media (max-height: 520px) and (orientation: landscape) {
+      .setup-card { padding: 14px 28px; max-width: 560px; }
+      .setup-card h1 { font-size: 1.4rem; margin-bottom: 2px; }
+      .setup-card .subtitle { font-size: .8rem; margin-bottom: 12px; }
+      .age-btn { width: 52px; height: 52px; font-size: 1.1rem; }
+      .age-buttons { margin-bottom: 12px; }
+      .field-wrap { margin-bottom: 10px; }
+      .mode-btn { padding: 8px 6px; font-size: .82rem; }
+      .mode-btn small { display: none; }
+      .start-btn { padding: 13px 32px; }
+
+      #quiz { padding: 8px 14px; }
+      .progress-wrap { margin-bottom: 7px; }
+      .question-card { padding: 8px 14px; margin-bottom: 8px; }
+      .speak-btn { width: 44px; height: 44px; font-size: 1.2rem; }
+      .options-grid { gap: 8px; }
+      .option-card {
+        flex-direction: row; justify-content: flex-start;
+        min-height: 66px; padding: 8px 14px; gap: 12px;
+      }
+      .option-emoji { font-size: 1.8rem !important; }
+      .option-image { width: 44px !important; height: 44px !important; }
+      .option-label { font-size: .82rem !important; }
+
+      .complete-card { padding: 18px 32px; }
+      .complete-emoji { font-size: 2.4rem; margin-bottom: 6px; }
+      .score-display { font-size: 2rem; margin: 8px 0; }
+      .score-stars { font-size: 1.5rem; margin-bottom: 12px; }
+    }
+
+    /* ── Safe-area insets (notch / home indicator) ── */
+    @supports (padding: max(0px)) {
+      #setup {
+        padding-top:    max(20px, env(safe-area-inset-top));
+        padding-left:   max(20px, env(safe-area-inset-left));
+        padding-right:  max(20px, env(safe-area-inset-right));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+      }
+      #quiz {
+        padding-top:    max(12px, env(safe-area-inset-top));
+        padding-left:   max(16px, env(safe-area-inset-left));
+        padding-right:  max(16px, env(safe-area-inset-right));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+      }
+      #complete {
+        padding-left:   max(20px, env(safe-area-inset-left));
+        padding-right:  max(20px, env(safe-area-inset-right));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+      }
+    }
   </style>
 </head>
 <body>
@@ -398,7 +586,7 @@
 <div class="screen" id="setup">
   <div class="setup-card">
     <h1>🌈 Learning Fun!</h1>
-    <p class="subtitle">For teachers & parents — set up before handing to child</p>
+    <p class="subtitle">For teachers &amp; parents — set up before handing to child</p>
 
     <div class="field-wrap">
       <div class="field-label">👶 Child's Age</div>
@@ -412,6 +600,20 @@
     <div class="field-wrap">
       <div class="field-label">🏷️ Child ID / Name (optional)</div>
       <input class="text-input" id="childId" type="text" placeholder="e.g. Child A, Student 3..." maxlength="40">
+    </div>
+
+    <div class="field-wrap">
+      <div class="field-label">🎮 Quiz Mode</div>
+      <div class="mode-buttons">
+        <button type="button" class="mode-btn active" data-mode="correct" onclick="selectMode('correct',this)">
+          🎯 Find the Answer
+          <small>Must pick the correct one</small>
+        </button>
+        <button type="button" class="mode-btn" data-mode="free" onclick="selectMode('free',this)">
+          📝 Free Choice
+          <small>Records any selection</small>
+        </button>
+      </div>
     </div>
 
     <button class="start-btn" id="startBtn" onclick="startQuiz()">
@@ -429,11 +631,13 @@
     </div>
     <div class="progress-label" id="progressLabel">1 / 10</div>
     <div class="stars-score" id="starsScore"></div>
+    <span class="mode-pill" id="modePill"></span>
   </div>
 
   <!-- Question -->
   <div class="question-card">
     <button class="speak-btn" id="speakBtn" onclick="playQuestion()" title="Hear the question again">🔊</button>
+    <img id="questionImage" class="question-img" style="display:none" alt="">
     <div class="question-text" id="questionText">Loading…</div>
     <span class="category-badge" id="categoryBadge">Animals</span>
   </div>
@@ -461,100 +665,9 @@
 
 <script>
 // ═══════════════════════════════════════════════
-//  QUESTION BANK
+//  QUESTION BANK  (loaded from PHP / questions.json)
 // ═══════════════════════════════════════════════
-const QUESTIONS = [
-  {
-    id:'q01', category:'Animals', speak:'Touch the cat!', hint:'Cat',
-    options:[
-      {emoji:'🐱',label:'Cat',correct:true,  bg:'#FFF0F0'},
-      {emoji:'🐶',label:'Dog',correct:false, bg:'#F0F4FF'},
-      {emoji:'🐰',label:'Rabbit',correct:false,bg:'#F0FFF4'},
-      {emoji:'🦆',label:'Duck',correct:false, bg:'#FFFBF0'},
-    ]
-  },
-  {
-    id:'q02', category:'Animals', speak:'Touch the dog!', hint:'Dog',
-    options:[
-      {emoji:'🐱',label:'Cat',correct:false,  bg:'#FFF0F0'},
-      {emoji:'🐶',label:'Dog',correct:true,   bg:'#F0F4FF'},
-      {emoji:'🐦',label:'Bird',correct:false, bg:'#F0FFF4'},
-      {emoji:'🐠',label:'Fish',correct:false, bg:'#F0FFFF'},
-    ]
-  },
-  {
-    id:'q03', category:'Colors', speak:'Touch the red color!', hint:'Red',
-    options:[
-      {emoji:'🔴',label:'Red',   correct:true,  bg:'#FFF0F0'},
-      {emoji:'🔵',label:'Blue',  correct:false, bg:'#F0F4FF'},
-      {emoji:'🟡',label:'Yellow',correct:false, bg:'#FFFDF0'},
-      {emoji:'🟢',label:'Green', correct:false, bg:'#F0FFF4'},
-    ]
-  },
-  {
-    id:'q04', category:'Shapes', speak:'Touch the circle!', hint:'Circle',
-    options:[
-      {emoji:'⭕',label:'Circle',   correct:true,  bg:'#FFF0F8'},
-      {emoji:'⬛',label:'Square',   correct:false, bg:'#F0F0F0'},
-      {emoji:'🔺',label:'Triangle', correct:false, bg:'#FFF8F0'},
-      {emoji:'💠',label:'Diamond',  correct:false, bg:'#F0FCFF'},
-    ]
-  },
-  {
-    id:'q05', category:'Food', speak:'Touch the apple!', hint:'Apple',
-    options:[
-      {emoji:'🍎',label:'Apple',  correct:true,  bg:'#FFF0F0'},
-      {emoji:'🍌',label:'Banana', correct:false, bg:'#FFFDF0'},
-      {emoji:'🍇',label:'Grapes', correct:false, bg:'#F8F0FF'},
-      {emoji:'🍊',label:'Orange', correct:false, bg:'#FFF8F0'},
-    ]
-  },
-  {
-    id:'q06', category:'Numbers', speak:'Touch the number two!', hint:'Two',
-    options:[
-      {emoji:'1️⃣',label:'One',  correct:false, bg:'#FFF0F0'},
-      {emoji:'2️⃣',label:'Two',  correct:true,  bg:'#F0F4FF'},
-      {emoji:'3️⃣',label:'Three',correct:false, bg:'#F0FFF4'},
-      {emoji:'4️⃣',label:'Four', correct:false, bg:'#FFFBF0'},
-    ]
-  },
-  {
-    id:'q07', category:'Animals', speak:'Touch the elephant!', hint:'Elephant',
-    options:[
-      {emoji:'🐘',label:'Elephant',correct:true,  bg:'#F4F0FF'},
-      {emoji:'🦁',label:'Lion',    correct:false, bg:'#FFF8E0'},
-      {emoji:'🐻',label:'Bear',    correct:false, bg:'#FFF4EC'},
-      {emoji:'🦊',label:'Fox',     correct:false, bg:'#FFF2EC'},
-    ]
-  },
-  {
-    id:'q08', category:'Colors', speak:'Touch the blue color!', hint:'Blue',
-    options:[
-      {emoji:'🔴',label:'Red',   correct:false, bg:'#FFF0F0'},
-      {emoji:'🔵',label:'Blue',  correct:true,  bg:'#F0F4FF'},
-      {emoji:'🟠',label:'Orange',correct:false, bg:'#FFF8F0'},
-      {emoji:'🟣',label:'Purple',correct:false, bg:'#F8F0FF'},
-    ]
-  },
-  {
-    id:'q09', category:'Food', speak:'Touch the banana!', hint:'Banana',
-    options:[
-      {emoji:'🍓',label:'Strawberry',correct:false,bg:'#FFF0F0'},
-      {emoji:'🍌',label:'Banana',    correct:true, bg:'#FFFDF0'},
-      {emoji:'🍑',label:'Peach',     correct:false,bg:'#FFF8F0'},
-      {emoji:'🍒',label:'Cherry',    correct:false,bg:'#FFF0F5'},
-    ]
-  },
-  {
-    id:'q10', category:'Shapes', speak:'Touch the star!', hint:'Star',
-    options:[
-      {emoji:'⭐',label:'Star',   correct:true,  bg:'#FFFDF0'},
-      {emoji:'❤️',label:'Heart',  correct:false, bg:'#FFF0F0'},
-      {emoji:'🌙',label:'Moon',   correct:false, bg:'#F0F0FF'},
-      {emoji:'☁️',label:'Cloud',  correct:false, bg:'#F0F8FF'},
-    ]
-  }
-];
+const QUESTIONS = <?= $_questionsJson ?>;
 
 // ═══════════════════════════════════════════════
 //  STATE
@@ -563,6 +676,7 @@ let state = {
   sessionId: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
   childAge: null,
   childId: '',
+  mode: 'correct',   // 'correct' | 'free'
   questions: [],
   current: 0,
   score: 0,
@@ -602,6 +716,12 @@ function buildBubbles() {
   }
 }
 
+function selectMode(mode, btn) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 function buildAgeButtons() {
   document.querySelectorAll('.age-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -624,12 +744,23 @@ function startQuiz() {
     ], {duration:350, easing:'ease'});
     return;
   }
-  state.childId  = document.getElementById('childId').value.trim();
+  state.childId   = document.getElementById('childId').value.trim();
   state.sessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
   state.questions = shuffle([...QUESTIONS]);
   state.current   = 0;
   state.score     = 0;
   state.results   = [];
+
+  // Mode pill indicator on quiz screen
+  const pill = document.getElementById('modePill');
+  if (state.mode === 'free') {
+    pill.textContent = '📝 Free Choice';
+    pill.className   = 'mode-pill mode-pill-free';
+  } else {
+    pill.textContent = '🎯 Find the Answer';
+    pill.className   = 'mode-pill mode-pill-correct';
+  }
+
   showScreen('quiz');
   loadQuestion();
 }
@@ -643,52 +774,93 @@ function loadQuestion() {
   state.attempts = 0;
   state.answered = false;
 
-  // Update progress
+  // Progress
   const pct = (state.current / state.questions.length) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent =
     `${state.current + 1} / ${state.questions.length}`;
   updateStars();
 
-  // Update question card
+  // Question card
   document.getElementById('questionText').textContent = q.hint;
   document.getElementById('categoryBadge').textContent = q.category;
 
-  // Build options (shuffled)
+  // Question image (if uploaded)
+  const qImg = document.getElementById('questionImage');
+  if (q.image) {
+    qImg.src   = q.image;
+    qImg.style.display = '';
+  } else {
+    qImg.style.display = 'none';
+    qImg.src = '';
+  }
+
+  // Build option cards (shuffled)
   const grid = document.getElementById('optionsGrid');
   grid.innerHTML = '';
   const opts = shuffle([...q.options]);
-  opts.forEach((opt, i) => {
+  opts.forEach(opt => {
     const card = document.createElement('div');
-    card.className = 'option-card';
-    card.style.background = opt.bg;
-    card.innerHTML = `
-      <div class="option-emoji">${opt.emoji}</div>
-      <div class="option-label">${opt.label}</div>
-    `;
+    card.className    = 'option-card';
+    card.style.background = opt.bg || '#F0F4FF';
+
+    // Media: uploaded image or emoji fallback
+    if (opt.image) {
+      const img = document.createElement('img');
+      img.className = 'option-image';
+      img.src       = opt.image;
+      img.alt       = opt.label;
+      card.appendChild(img);
+    } else {
+      const emojiEl = document.createElement('div');
+      emojiEl.className   = 'option-emoji';
+      emojiEl.textContent = opt.emoji || '❓';
+      card.appendChild(emojiEl);
+    }
+
+    const labelEl = document.createElement('div');
+    labelEl.className   = 'option-label';
+    labelEl.textContent = opt.label;
+    card.appendChild(labelEl);
+
     card.addEventListener('pointerdown', () => handleAnswer(card, opt, q));
     grid.appendChild(card);
   });
 
-  // Auto-play audio after a short delay
   setTimeout(() => playQuestion(), 600);
 }
 
 // ═══════════════════════════════════════════════
-//  SPEECH
+//  SPEECH / AUDIO
 // ═══════════════════════════════════════════════
 function playQuestion() {
-  const q = state.questions[state.current];
-  if (!window.speechSynthesis) return;
-  speechSynthesis.cancel();
+  const q   = state.questions[state.current];
   const btn = document.getElementById('speakBtn');
   btn.classList.add('speaking');
-  const utt = new SpeechSynthesisUtterance(q.speak);
-  utt.rate  = 0.85;
-  utt.pitch = 1.2;
-  utt.lang  = 'en-US';
-  utt.onend = () => btn.classList.remove('speaking');
+
+  if (q.audio) {
+    const audio = new Audio(q.audio);
+    audio.onended = () => btn.classList.remove('speaking');
+    audio.onerror = () => { btn.classList.remove('speaking'); useTTS(q.speak, btn); };
+    audio.play().catch(() => { btn.classList.remove('speaking'); useTTS(q.speak, btn); });
+    return;
+  }
+  useTTS(q.speak, btn);
+}
+
+function useTTS(text, btn) {
+  if (!window.speechSynthesis) { btn && btn.classList.remove('speaking'); return; }
+  speechSynthesis.cancel();
+  const utt   = new SpeechSynthesisUtterance(text);
+  utt.rate    = 0.85;
+  utt.pitch   = 1.2;
+  utt.lang    = 'en-US';
+  utt.onend   = () => btn && btn.classList.remove('speaking');
   speechSynthesis.speak(utt);
+}
+
+function speakText(text) {
+  useTTS(text, null);
 }
 
 // ═══════════════════════════════════════════════
@@ -698,20 +870,60 @@ function handleAnswer(card, opt, q) {
   if (state.answered) return;
   state.attempts++;
 
-  const allCards = document.querySelectorAll('.option-card');
+  const allCards    = document.querySelectorAll('.option-card');
+  const correctOpt  = q.options.find(o => o.correct);
+  const responseTime = Date.now() - state.questionStartTime;
 
+  // ── FREE CHOICE MODE ─────────────────────────────────────────
+  // Record whatever the child picks and advance — no right/wrong feedback.
+  if (state.mode === 'free') {
+    state.answered = true;
+    allCards.forEach(c => c.classList.add('disabled'));
+    card.style.border = '4px solid #4ECDC4';
+    card.style.background = '#f0fffe';
+
+    if (opt.correct) state.score++;
+
+    const result = {
+      session_id:       state.sessionId,
+      child_age:        state.childAge,
+      child_id:         state.childId,
+      quiz_mode:        'free',
+      question_id:      q.id,
+      question_text:    q.speak,
+      category:         q.category,
+      correct_label:    correctOpt.label,
+      selected_label:   opt.label,
+      is_correct:       opt.correct,
+      attempts:         1,
+      response_time_ms: responseTime,
+    };
+    state.results.push(result);
+    submitResult(result);
+
+    setTimeout(() => {
+      state.current++;
+      if (state.current < state.questions.length) {
+        loadQuestion();
+      } else {
+        showComplete();
+      }
+    }, 650);
+    return;
+  }
+
+  // ── FIND CORRECT MODE (default) ──────────────────────────────
   if (opt.correct) {
     state.answered = true;
     card.classList.add('correct');
     allCards.forEach(c => { if (c !== card) c.classList.add('disabled'); });
     state.score++;
 
-    const responseTime = Date.now() - state.questionStartTime;
-    const correctOpt   = q.options.find(o => o.correct);
     const result = {
       session_id:       state.sessionId,
       child_age:        state.childAge,
       child_id:         state.childId,
+      quiz_mode:        'correct',
       question_id:      q.id,
       question_text:    q.speak,
       category:         q.category,
@@ -726,8 +938,6 @@ function handleAnswer(card, opt, q) {
 
     showFeedback('✅ Great job!', 'correct-msg');
     launchConfetti(card);
-
-    // Speak praise
     speakText(['Wonderful!','Amazing!','Super!','You got it!'][Math.floor(Math.random()*4)]);
 
     setTimeout(() => {
@@ -743,8 +953,6 @@ function handleAnswer(card, opt, q) {
   } else {
     card.classList.add('wrong');
     setTimeout(() => card.classList.remove('wrong'), 500);
-
-    // Record wrong attempt but don't lock
     speakText('Try again!');
     showFeedback('🤔 Try again!', 'wrong-msg');
     setTimeout(hideFeedback, 900);
@@ -786,20 +994,14 @@ function launchConfetti(fromCard) {
   }
 }
 
-function speakText(text) {
-  if (!window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.9; utt.pitch = 1.3; utt.lang = 'en-US';
-  speechSynthesis.speak(utt);
-}
-
 // ═══════════════════════════════════════════════
 //  STARS
 // ═══════════════════════════════════════════════
 function updateStars() {
   const container = document.getElementById('starsScore');
   container.innerHTML = '';
+  // In free choice mode stars are hidden — no right/wrong shown to the child
+  if (state.mode === 'free') return;
   for (let i = 0; i < state.questions.length; i++) {
     const s = document.createElement('span');
     s.className = 'star-icon' + (i < state.score ? ' lit' : '');
@@ -813,18 +1015,27 @@ function updateStars() {
 // ═══════════════════════════════════════════════
 function showComplete() {
   const total = state.questions.length;
-  const pct   = state.score / total;
-  const emoji   = pct >= .8 ? '🏆' : pct >= .6 ? '🎉' : '💪';
-  const title   = pct >= .8 ? 'Amazing!'  : pct >= .6 ? 'Great Job!' : 'Keep Trying!';
-  const stars   = pct >= .8 ? '⭐⭐⭐' : pct >= .6 ? '⭐⭐' : '⭐';
 
-  document.getElementById('completeEmoji').textContent  = emoji;
-  document.getElementById('completeTitle').textContent  = title;
-  document.getElementById('scoreDisplay').textContent   = `${state.score} / ${total}`;
-  document.getElementById('scoreStars').textContent     = stars;
-
-  showScreen('complete');
-  speakText(`You got ${state.score} out of ${total}! ${title}`);
+  if (state.mode === 'free') {
+    // Free choice: always celebrate — don't reveal right/wrong to the child
+    document.getElementById('completeEmoji').textContent = '🌟';
+    document.getElementById('completeTitle').textContent = 'All Done!';
+    document.getElementById('scoreDisplay').textContent  = `${total} / ${total}`;
+    document.getElementById('scoreStars').textContent    = '⭐⭐⭐';
+    showScreen('complete');
+    speakText('Well done! All finished!');
+  } else {
+    const pct   = state.score / total;
+    const emoji = pct >= .8 ? '🏆' : pct >= .6 ? '🎉' : '💪';
+    const title = pct >= .8 ? 'Amazing!'  : pct >= .6 ? 'Great Job!' : 'Keep Trying!';
+    const stars = pct >= .8 ? '⭐⭐⭐' : pct >= .6 ? '⭐⭐' : '⭐';
+    document.getElementById('completeEmoji').textContent = emoji;
+    document.getElementById('completeTitle').textContent = title;
+    document.getElementById('scoreDisplay').textContent  = `${state.score} / ${total}`;
+    document.getElementById('scoreStars').textContent    = stars;
+    showScreen('complete');
+    speakText(`You got ${state.score} out of ${total}! ${title}`);
+  }
 }
 
 function retryQuiz() {
