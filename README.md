@@ -1,4 +1,4 @@
-<img width="260" height="150" alt="learning_fun_cover_image" src="https://github.com/user-attachments/assets/936167e7-f3df-41b8-876f-c9baa4cbf6ad" />
+<img width="1200" height="720" alt="learning_fun_cover_image" src="https://github.com/user-attachments/assets/936167e7-f3df-41b8-876f-c9baa4cbf6ad" />
 
 # 🌟 Learning Fun! — Child Quiz Data Collection System
 
