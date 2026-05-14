@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software in your research, please cite it using the following metadata."
 type: software
-title: "Learning Fun! — Interactive Child Quiz & Knowledge Assessment System"
+title: "Interactive Child Quiz & Knowledge Assessment System"
 abstract: >
   Learning Fun! is an open-source, touch-screen web application designed for
   preschool teachers and parents to administer interactive quiz sessions to
@@ -22,7 +22,7 @@ version: "0.1.0"
 date-released: "2026-04-28"
 license: MIT
 repository-code: "https://github.com/ShanukaDilan/Interactive-Data-Collection-From-Children"
-url: ""               # Add your Zenodo DOI URL here once confirmed
+url: ""               
 keywords:
   - early childhood education
   - preschool
