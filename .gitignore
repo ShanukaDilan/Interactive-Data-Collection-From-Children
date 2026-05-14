@@ -1,0 +1,9 @@
+# Local Claude Code settings
+.claude/
+
+# Research data — contains personally identifiable child response records
+data/responses.jsonl
+
+# Uploaded media files (user-generated content)
+uploads/*
+!uploads/.htaccess

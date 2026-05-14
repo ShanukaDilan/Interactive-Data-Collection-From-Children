@@ -1,0 +1,142 @@
+[
+  {
+    "id": "q01",
+    "category": "Animals",
+    "speak": "Touch the cat!",
+    "hint": "Cat",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Cat",    "correct": true,  "bg": "#FFF0F0", "emoji": "🐱", "image": null},
+      {"label": "Dog",    "correct": false, "bg": "#F0F4FF", "emoji": "🐶", "image": null},
+      {"label": "Rabbit", "correct": false, "bg": "#F0FFF4", "emoji": "🐰", "image": null},
+      {"label": "Duck",   "correct": false, "bg": "#FFFBF0", "emoji": "🦆", "image": null}
+    ]
+  },
+  {
+    "id": "q02",
+    "category": "Animals",
+    "speak": "Touch the dog!",
+    "hint": "Dog",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Cat",  "correct": false, "bg": "#FFF0F0", "emoji": "🐱", "image": null},
+      {"label": "Dog",  "correct": true,  "bg": "#F0F4FF", "emoji": "🐶", "image": null},
+      {"label": "Bird", "correct": false, "bg": "#F0FFF4", "emoji": "🐦", "image": null},
+      {"label": "Fish", "correct": false, "bg": "#F0FFFF", "emoji": "🐠", "image": null}
+    ]
+  },
+  {
+    "id": "q03",
+    "category": "Colors",
+    "speak": "Touch the red color!",
+    "hint": "Red",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Red",    "correct": true,  "bg": "#FFF0F0", "emoji": "🔴", "image": null},
+      {"label": "Blue",   "correct": false, "bg": "#F0F4FF", "emoji": "🔵", "image": null},
+      {"label": "Yellow", "correct": false, "bg": "#FFFDF0", "emoji": "🟡", "image": null},
+      {"label": "Green",  "correct": false, "bg": "#F0FFF4", "emoji": "🟢", "image": null}
+    ]
+  },
+  {
+    "id": "q04",
+    "category": "Shapes",
+    "speak": "Touch the circle!",
+    "hint": "Circle",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Circle",   "correct": true,  "bg": "#FFF0F8", "emoji": "⭕",     "image": null},
+      {"label": "Square",   "correct": false, "bg": "#F0F0F0", "emoji": "⬛",     "image": null},
+      {"label": "Triangle", "correct": false, "bg": "#FFF8F0", "emoji": "🔺", "image": null},
+      {"label": "Diamond",  "correct": false, "bg": "#F0FCFF", "emoji": "💠", "image": null}
+    ]
+  },
+  {
+    "id": "q05",
+    "category": "Food",
+    "speak": "Touch the apple!",
+    "hint": "Apple",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Apple",  "correct": true,  "bg": "#FFF0F0", "emoji": "🍎", "image": null},
+      {"label": "Banana", "correct": false, "bg": "#FFFDF0", "emoji": "🍌", "image": null},
+      {"label": "Grapes", "correct": false, "bg": "#F8F0FF", "emoji": "🍇", "image": null},
+      {"label": "Orange", "correct": false, "bg": "#FFF8F0", "emoji": "🍊", "image": null}
+    ]
+  },
+  {
+    "id": "q06",
+    "category": "Numbers",
+    "speak": "Touch the number two!",
+    "hint": "Two",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "One",   "correct": false, "bg": "#FFF0F0", "emoji": "1️⃣", "image": null},
+      {"label": "Two",   "correct": true,  "bg": "#F0F4FF", "emoji": "2️⃣", "image": null},
+      {"label": "Three", "correct": false, "bg": "#F0FFF4", "emoji": "3️⃣", "image": null},
+      {"label": "Four",  "correct": false, "bg": "#FFFBF0", "emoji": "4️⃣", "image": null}
+    ]
+  },
+  {
+    "id": "q07",
+    "category": "Animals",
+    "speak": "Touch the elephant!",
+    "hint": "Elephant",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Elephant", "correct": true,  "bg": "#F4F0FF", "emoji": "🐘", "image": null},
+      {"label": "Lion",     "correct": false, "bg": "#FFF8E0", "emoji": "🦁", "image": null},
+      {"label": "Bear",     "correct": false, "bg": "#FFF4EC", "emoji": "🐻", "image": null},
+      {"label": "Fox",      "correct": false, "bg": "#FFF2EC", "emoji": "🦊", "image": null}
+    ]
+  },
+  {
+    "id": "q08",
+    "category": "Colors",
+    "speak": "Touch the blue color!",
+    "hint": "Blue",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Red",    "correct": false, "bg": "#FFF0F0", "emoji": "🔴", "image": null},
+      {"label": "Blue",   "correct": true,  "bg": "#F0F4FF", "emoji": "🔵", "image": null},
+      {"label": "Orange", "correct": false, "bg": "#FFF8F0", "emoji": "🟠", "image": null},
+      {"label": "Purple", "correct": false, "bg": "#F8F0FF", "emoji": "🟣", "image": null}
+    ]
+  },
+  {
+    "id": "q09",
+    "category": "Food",
+    "speak": "Touch the banana!",
+    "hint": "Banana",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Strawberry", "correct": false, "bg": "#FFF0F0", "emoji": "🍓", "image": null},
+      {"label": "Banana",     "correct": true,  "bg": "#FFFDF0", "emoji": "🍌", "image": null},
+      {"label": "Peach",      "correct": false, "bg": "#FFF8F0", "emoji": "🍑", "image": null},
+      {"label": "Cherry",     "correct": false, "bg": "#FFF0F5", "emoji": "🍒", "image": null}
+    ]
+  },
+  {
+    "id": "q10",
+    "category": "Shapes",
+    "speak": "Touch the star!",
+    "hint": "Star",
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Star",  "correct": true,  "bg": "#FFFDF0", "emoji": "⭐",         "image": null},
+      {"label": "Heart", "correct": false, "bg": "#FFF0F0", "emoji": "❤️",   "image": null},
+      {"label": "Moon",  "correct": false, "bg": "#F0F0FF", "emoji": "🌙",   "image": null},
+      {"label": "Cloud", "correct": false, "bg": "#F0F8FF", "emoji": "☁️",   "image": null}
+    ]
+  }
+]

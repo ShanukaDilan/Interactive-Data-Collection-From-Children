@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it using the following metadata."
+type: software
+title: "Learning Fun! — Interactive Child Quiz & Knowledge Assessment System"
+abstract: >
+  Learning Fun! is an open-source, touch-screen web application designed for
+  preschool teachers and parents to administer interactive quiz sessions to
+  children aged 4–6. Questions are delivered via text-to-speech audio; children
+  respond by tapping large emoji or image cards on any device. The system
+  supports two evidence-informed data-collection modes — a correctness-enforced
+  "Find the Answer" mode and an open-ended "Free Choice" mode — and records
+  response accuracy, attempt count, and response time (ms) per question for
+  downstream analysis. All session data is stored as JSONL and exportable as CSV
+  through a password-protected admin dashboard. The tool is designed for use in
+  early childhood education research, cognitive assessment studies, and classroom
+  formative assessment.
+authors:
+  - family-names: "Gomas"
+    given-names: "A. S. Dilan"
+    orcid: "https://orcid.org/0009-0007-5551-4411"
+version: "0.1.0"
+date-released: "2026-04-28"
+license: MIT
+repository-code: "https://github.com/ShanukaDilan/Interactive-Data-Collection-From-Children"
+url: ""               # Add your Zenodo DOI URL here once confirmed
+keywords:
+  - early childhood education
+  - preschool
+  - edtech
+  - learning assessment
+  - child cognitive assessment
+  - interactive quiz
+  - response time
+  - formative assessment
+  - PHP
+  - web application
+  - open educational resources
+  - touch screen learning

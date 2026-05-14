@@ -1,0 +1,40 @@
+{
+  "title": "Learning Fun! — Interactive Child Quiz & Knowledge Assessment System",
+  "description": "<p><strong>Learning Fun!</strong> is an open-source, touch-screen web application for preschool teachers and parents to administer structured, interactive quiz sessions to children aged 4–6. It is designed to support both classroom formative assessment and early childhood education research.</p><h3>Key Features</h3><ul><li><strong>Audio-driven questions</strong> — each question is spoken aloud via Web Speech API TTS (or uploaded audio), so pre-literate children can participate independently.</li><li><strong>Two data-collection modes:</strong><ul><li><em>Find the Answer</em> — child must select the correct option; attempt count and response time are recorded.</li><li><em>Free Choice</em> — any tap is accepted and recorded without right/wrong feedback, supporting open-ended observational research.</li></ul></li><li><strong>Structured data output</strong> — every response is saved as JSONL and exportable as CSV with 13 fields including session ID, child age/ID, category, correct answer, selected answer, is_correct, attempts, and response time (ms).</li><li><strong>Admin dashboard</strong> — password-protected; shows accuracy by category and age group, full paginated response table, and one-click CSV download.</li><li><strong>Custom question editor</strong> — supports 24 built-in categories; questions can include uploaded images and audio. No database required.</li><li><strong>Fully responsive</strong> — designed for phones, tablets, and desktops with safe-area inset support for notched screens.</li></ul><h3>Target Users</h3><ul><li>Preschool and kindergarten teachers (formative assessment)</li><li>Early childhood education researchers (cognitive and language studies)</li><li>Parents (home learning and progress tracking)</li><li>Educational technology developers (as a base system)</li></ul><h3>Technical Stack</h3><p>PHP 7.4+, vanilla JavaScript (ES6), Web Speech API, CSS3. No framework or database dependencies. Stores data as flat JSONL/JSON files.</p><h3>Age Range</h3><p>4–6 years (configurable per session)</p><h3>Languages</h3><p>English (default). Language code is configurable for Sinhala (si-LK), Tamil (ta-IN), or any BCP 47 locale.</p>",
+  "access_right": "open",
+  "license": "MIT",
+  "upload_type": "software",
+  "keywords": [
+    "early childhood education",
+    "preschool",
+    "kindergarten",
+    "edtech",
+    "learning assessment",
+    "child cognitive assessment",
+    "interactive quiz",
+    "response time",
+    "formative assessment",
+    "PHP",
+    "web application",
+    "open educational resources",
+    "touch screen learning",
+    "educational data collection",
+    "child development"
+  ],
+  "creators": [
+    {
+      "name": "Dilan Gomas, A.S.",
+      "affiliation": "Department of Information Technology, Faculty of Social Sciences and Languages, Sabaragamuwa University of Sri Lanka",
+      "orcid": "https://orcid.org/0009-0007-5551-4411"
+    }
+  ],
+  "version": "0.1.0",
+  "language": "eng",
+  "notes": "Change the default admin password (admin123) before deployment. See README.md for full setup instructions. PHP 7.4+ and a web server (Apache/Nginx) required.",
+  "related_identifiers": [],
+  "communities": [
+    {
+      "identifier": "zenodo"
+    }
+  ]
+}
