@@ -83,13 +83,14 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']
     }
 
     if ($act === 'reset_all') {
-        // Form POST: delete everything, redirect
+        // AJAX: delete everything, return JSON (client reloads)
+        header('Content-Type: application/json');
         try {
             $pdo = getDb();
             if ($pdo) $pdo->exec("DELETE FROM responses");
         } catch (Throwable $e) { error_log('reset_all: ' . $e->getMessage()); }
         if (file_exists(DATA_FILE)) file_put_contents(DATA_FILE, '');
-        header('Location: admin.php?view=dashboard');
+        echo json_encode(['ok' => true]);
         exit;
     }
 }
@@ -913,10 +914,7 @@ $qsData = $loggedIn ? loadQuestions() : [];
 <?php if ($rows): ?>
   <div style="display:flex;flex-wrap:wrap;gap:0;align-items:center;margin-bottom:0">
     <a href="?download=csv" class="download-btn" style="margin-bottom:24px">📥 Download All Data as CSV</a>
-    <form method="POST" onsubmit="return confirm('Delete ALL records? This cannot be undone.')">
-      <input type="hidden" name="action" value="reset_all">
-      <button type="submit" class="reset-btn">🗑 Reset All Data</button>
-    </form>
+    <button type="button" class="reset-btn" id="resetAllBtn" onclick="resetAll()">🗑 Reset All Data</button>
   </div>
 <?php endif; ?>
 
@@ -1084,6 +1082,22 @@ $qsData = $loggedIn ? loadQuestions() : [];
 
 <?php if ($loggedIn && $view === 'dashboard'): ?>
 <script>
+async function resetAll() {
+  if (!confirm('Delete ALL records? This cannot be undone.')) return;
+  const btn = document.getElementById('resetAllBtn');
+  btn.disabled = true;
+  btn.textContent = 'Deleting…';
+  try {
+    const fd = new FormData();
+    fd.append('action', 'reset_all');
+    const res  = await fetch('admin.php', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) { window.location.reload(); return; }
+  } catch(e) {}
+  btn.disabled = false;
+  btn.textContent = '🗑 Reset All Data';
+}
+
 async function delRecord(id, btn) {
   if (!confirm('Delete this response record?')) return;
   btn.disabled = true;
