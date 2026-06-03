@@ -8,6 +8,8 @@ define('ADMIN_PASSWORD', 'admin123');   // ← CHANGE THIS
 define('DATA_FILE',      __DIR__ . '/data/responses.jsonl');
 define('QUESTIONS_FILE', __DIR__ . '/data/questions.json');
 
+require_once __DIR__ . '/db.php';
+
 session_start();
 
 // ── Handle logout ────────────────────────────────────────────────
@@ -62,8 +64,34 @@ if ($loggedIn && isset($_GET['download']) && $_GET['download'] === 'csv') {
     exit;
 }
 
-// ── Load response records ─────────────────────────────────────────
+// ── Load response records (DB first, file fallback) ───────────────
 function loadData(): array {
+    $pdo = getDb();
+
+    if ($pdo) {
+        try {
+            $stmt = $pdo->query(
+                "SELECT * FROM responses ORDER BY created_at DESC"
+            );
+            $rows = [];
+            foreach ($stmt->fetchAll() as $r) {
+                // Normalise column names to match the rest of the code
+                $r['timestamp']  = $r['created_at'] ?? '';
+                $r['is_correct'] = (int)($r['is_correct'] ?? 0);
+                $r['child_age']  = (int)($r['child_age']  ?? 0);
+                $r['attempts']   = (int)($r['attempts']   ?? 1);
+                $r['response_time_ms'] = (int)($r['response_time_ms'] ?? 0);
+                $r['quiz_mode']  = $r['quiz_mode'] ?? 'correct';
+                $rows[] = $r;
+            }
+            return $rows;
+        } catch (Throwable $e) {
+            error_log('DB loadData: ' . $e->getMessage());
+            // fall through to file fallback
+        }
+    }
+
+    // File fallback
     if (!file_exists(DATA_FILE)) return [];
     $lines = file(DATA_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $rows  = [];
@@ -71,7 +99,7 @@ function loadData(): array {
         $r = json_decode($line, true);
         if ($r) $rows[] = $r;
     }
-    return $rows;
+    return array_reverse($rows); // newest first, consistent with DB order
 }
 
 // ── Load questions ────────────────────────────────────────────────
@@ -596,7 +624,13 @@ $qsData = $loggedIn ? loadQuestions() : [];
        class="nav-tab <?= ($view==='questions')?'active':'' ?>">📝 Questions</a>
   <?php endif; ?>
   <span class="nav-spacer"></span>
-  <?php if ($loggedIn): ?>
+  <?php if ($loggedIn):
+    $dbOk = (getDb() !== null); ?>
+    <span style="font-size:.78rem;font-weight:800;padding:6px 12px;border-radius:8px;
+                 background:<?= $dbOk?'#d4edda':'#fff3cd' ?>;
+                 color:<?= $dbOk?'#155724':'#856404' ?>;">
+      <?= $dbOk ? '🟢 DB Connected' : '🟡 File Storage' ?>
+    </span>
     <a href="index.php" target="_blank" class="nav-btn">▶ Open Quiz</a>
     <a href="?logout" class="nav-btn danger">Logout</a>
   <?php endif; ?>
