@@ -280,6 +280,21 @@ $_questionsJson = json_encode($_qData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCA
       white-space: nowrap;
     }
 
+    /* Question emoji / letter display */
+    .question-emoji-display {
+      flex-shrink: 0;
+      line-height: 1.25;
+      font-family: 'Fredoka One', cursive;
+      letter-spacing: 0.05em;
+    }
+    .question-emoji-display.qemoji-letter {
+      font-size: clamp(3.5rem, 10vw, 6rem);
+    }
+    .question-emoji-display.qemoji-count {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      max-width: 200px;
+    }
+
     /* Options grid */
     .options-grid {
       display: grid;
@@ -467,6 +482,8 @@ $_questionsJson = json_encode($_qData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCA
 
     /* ── ≤ 480px  (phones) ─────────────────────────── */
     @media (max-width: 480px) {
+      .question-emoji-display.qemoji-letter { font-size: 2.6rem; }
+      .question-emoji-display.qemoji-count  { font-size: 1.5rem; max-width: 160px; }
       .setup-card { padding: 24px 20px; border-radius: 24px; }
       .setup-card h1 { font-size: 1.8rem; margin-bottom: 4px; }
       .setup-card .subtitle { font-size: .88rem; margin-bottom: 18px; }
@@ -547,6 +564,73 @@ $_questionsJson = json_encode($_qData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCA
       .complete-emoji { font-size: 2.4rem; margin-bottom: 6px; }
       .score-display { font-size: 2rem; margin: 8px 0; }
       .score-stars { font-size: 1.5rem; margin-bottom: 12px; }
+    }
+
+    /* ── NUMBER INPUT KEYPAD ─────────────────────────── */
+    .number-input-wrap {
+      max-width: 700px; width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 16px;
+    }
+    .number-display {
+      font-family: 'Fredoka One', cursive;
+      font-size: 5rem;
+      color: #aaa;
+      background: white;
+      border-radius: 24px;
+      min-width: 140px; height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.10);
+      border: 4px dashed #ddd;
+      transition: all .25s;
+      padding: 0 24px;
+    }
+    .number-display.has-value   { border-color: var(--sky); border-style: solid; color: var(--sky); }
+    .number-display.correct-val { border-color: #2ecc71; color: #2ecc71; background: #f0fff6; border-style: solid; }
+    .number-display.wrong-val   { border-color: #e74c3c; color: #e74c3c; background: #fff5f5; border-style: solid; animation: shake .4s ease; }
+    .number-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 340px; width: 100%;
+    }
+    .num-btn {
+      aspect-ratio: 1;
+      border-radius: 20px;
+      border: 3px solid #eee;
+      background: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.5rem, 5.5vw, 2.6rem);
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,.09);
+      transition: transform .12s, box-shadow .12s, background .12s;
+      color: #444;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .num-btn:hover  { background: #f0fffe; border-color: var(--sky); color: #2bbcb3; }
+    .num-btn:active { transform: scale(.86); box-shadow: 0 2px 6px rgba(0,0,0,.10); }
+    .num-btn.num-del {
+      background: #fff5f5; border-color: #ffd0d0;
+      font-size: clamp(1.1rem, 3.5vw, 1.7rem); color: #e74c3c;
+    }
+    .num-btn.num-ok {
+      background: linear-gradient(135deg, var(--sky), #2bbcb3);
+      border-color: transparent; color: white;
+      box-shadow: 0 6px 16px rgba(78,205,196,.4);
+    }
+    .num-btn:disabled { opacity: .45; pointer-events: none; }
+
+    @media (max-width: 480px) {
+      .number-display { font-size: 3.5rem; height: 90px; min-width: 110px; }
+      .number-keypad  { gap: 8px; max-width: 272px; }
+      .num-btn        { border-radius: 14px; border-width: 2px; }
+    }
+    @media (max-height: 520px) and (orientation: landscape) {
+      .number-display { font-size: 2.4rem; height: 66px; min-width: 88px; }
+      .number-keypad  { gap: 6px; max-width: 220px; }
+      .num-btn        { border-radius: 12px; }
     }
 
     /* ── Safe-area insets (notch / home indicator) ── */
@@ -638,12 +722,19 @@ $_questionsJson = json_encode($_qData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCA
   <div class="question-card">
     <button class="speak-btn" id="speakBtn" onclick="playQuestion()" title="Hear the question again">🔊</button>
     <img id="questionImage" class="question-img" style="display:none" alt="">
+    <div class="question-emoji-display" id="questionEmojiDisplay" style="display:none"></div>
     <div class="question-text" id="questionText">Loading…</div>
     <span class="category-badge" id="categoryBadge">Animals</span>
   </div>
 
-  <!-- Answers -->
+  <!-- Answers: choice cards -->
   <div class="options-grid" id="optionsGrid"></div>
+
+  <!-- Answers: number keypad (counting questions) -->
+  <div class="number-input-wrap" id="numberInputWrap" style="display:none">
+    <div class="number-display" id="numberDisplay">?</div>
+    <div class="number-keypad" id="numberKeypad"></div>
+  </div>
 </div>
 
 <!-- ── COMPLETE SCREEN ─────────────────────────────── -->
@@ -795,37 +886,58 @@ function loadQuestion() {
     qImg.src = '';
   }
 
-  // Build option cards (shuffled)
-  const grid = document.getElementById('optionsGrid');
-  grid.innerHTML = '';
-  const opts = shuffle([...q.options]);
-  opts.forEach(opt => {
-    const card = document.createElement('div');
-    card.className    = 'option-card';
-    card.style.background = opt.bg || '#F0F4FF';
+  // Question emoji / letter display
+  const qEmojiEl = document.getElementById('questionEmojiDisplay');
+  if (q.question_emoji) {
+    qEmojiEl.textContent = q.question_emoji;
+    qEmojiEl.style.display = '';
+    const codepoints = [...q.question_emoji].length;
+    qEmojiEl.className = 'question-emoji-display ' + (codepoints <= 1 ? 'qemoji-letter' : 'qemoji-count');
+  } else {
+    qEmojiEl.style.display = 'none';
+    qEmojiEl.textContent = '';
+  }
 
-    // Media: uploaded image or emoji fallback
-    if (opt.image) {
-      const img = document.createElement('img');
-      img.className = 'option-image';
-      img.src       = opt.image;
-      img.alt       = opt.label;
-      card.appendChild(img);
-    } else {
-      const emojiEl = document.createElement('div');
-      emojiEl.className   = 'option-emoji';
-      emojiEl.textContent = opt.emoji || '❓';
-      card.appendChild(emojiEl);
-    }
+  // Show number keypad or choice cards depending on question type
+  const isNumberInput = q.type === 'number-input';
+  document.getElementById('optionsGrid').style.display    = isNumberInput ? 'none' : '';
+  document.getElementById('numberInputWrap').style.display = isNumberInput ? '' : 'none';
 
-    const labelEl = document.createElement('div');
-    labelEl.className   = 'option-label';
-    labelEl.textContent = opt.label;
-    card.appendChild(labelEl);
+  if (isNumberInput) {
+    buildNumberKeypad(q);
+  } else {
+    // Build option cards (shuffled)
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = q.options.length <= 3 ? 'repeat(3, 1fr)' : '1fr 1fr';
+    const opts = shuffle([...q.options]);
+    opts.forEach(opt => {
+      const card = document.createElement('div');
+      card.className    = 'option-card';
+      card.style.background = opt.bg || '#F0F4FF';
 
-    card.addEventListener('pointerdown', () => handleAnswer(card, opt, q));
-    grid.appendChild(card);
-  });
+      if (opt.image) {
+        const img = document.createElement('img');
+        img.className = 'option-image';
+        img.src       = opt.image;
+        img.alt       = opt.label;
+        card.appendChild(img);
+      } else {
+        const emojiEl = document.createElement('div');
+        emojiEl.className   = 'option-emoji';
+        emojiEl.textContent = opt.emoji || '❓';
+        card.appendChild(emojiEl);
+      }
+
+      const labelEl = document.createElement('div');
+      labelEl.className   = 'option-label';
+      labelEl.textContent = opt.label;
+      card.appendChild(labelEl);
+
+      card.addEventListener('pointerdown', () => handleAnswer(card, opt, q));
+      grid.appendChild(card);
+    });
+  }
 
   setTimeout(() => playQuestion(), 600);
 }
@@ -1082,6 +1194,132 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.toggle('hidden', s.id !== id);
   });
+}
+
+// ═══════════════════════════════════════════════
+//  NUMBER KEYPAD (counting questions)
+// ═══════════════════════════════════════════════
+function buildNumberKeypad(q) {
+  const display = document.getElementById('numberDisplay');
+  display.textContent = '?';
+  display.className   = 'number-display';
+
+  const correctAnswer = String(q.correct_number ?? q.options.find(o => o.correct)?.label ?? '');
+  let currentInput = '';
+
+  const keypad = document.getElementById('numberKeypad');
+  keypad.innerHTML = '';
+
+  // Phone-style layout: 1-9, then ⌫, 0, ✓
+  const keys = ['1','2','3','4','5','6','7','8','9','⌫','0','✓'];
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.className   = 'num-btn';
+    btn.textContent = k;
+    if (k === '⌫') btn.classList.add('num-del');
+    if (k === '✓') btn.classList.add('num-ok');
+
+    btn.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if (state.answered) return;
+
+      if (k === '⌫') {
+        currentInput = currentInput.slice(0, -1);
+        display.textContent = currentInput || '?';
+        display.className   = 'number-display' + (currentInput ? ' has-value' : '');
+        return;
+      }
+
+      if (k === '✓') {
+        if (currentInput) submitNumberAnswer(currentInput, correctAnswer, q);
+        return;
+      }
+
+      // Digit pressed
+      if (currentInput.length >= 2) return; // cap at 2 digits
+      currentInput += k;
+      display.textContent = currentInput;
+      display.className   = 'number-display has-value';
+
+      // Auto-submit once the digit count matches the correct answer length
+      if (currentInput.length >= correctAnswer.length) {
+        submitNumberAnswer(currentInput, correctAnswer, q);
+      }
+    });
+
+    keypad.appendChild(btn);
+  });
+}
+
+function submitNumberAnswer(input, correct, q) {
+  if (state.answered) return;
+  state.answered = true;
+  state.attempts++;
+
+  const display    = document.getElementById('numberDisplay');
+  const keypadBtns = document.querySelectorAll('.num-btn');
+  keypadBtns.forEach(b => b.disabled = true);
+
+  const isCorrect    = input === correct;
+  const responseTime = Date.now() - state.questionStartTime;
+  const correctOpt   = q.options.find(o => o.correct);
+
+  const result = {
+    session_id:       state.sessionId,
+    child_age:        state.childAge,
+    child_id:         state.childId,
+    quiz_mode:        state.mode,
+    question_id:      q.id,
+    question_text:    q.speak,
+    category:         q.category,
+    correct_label:    correct,
+    selected_label:   input,
+    is_correct:       isCorrect,
+    attempts:         state.attempts,
+    response_time_ms: responseTime,
+  };
+
+  // Free choice — record and advance regardless
+  if (state.mode === 'free') {
+    display.className = 'number-display correct-val';
+    state.results.push(result);
+    submitResult(result);
+    setTimeout(() => {
+      state.current++;
+      if (state.current < state.questions.length) loadQuestion();
+      else showComplete();
+    }, 650);
+    return;
+  }
+
+  // Correct mode
+  if (isCorrect) {
+    display.className = 'number-display correct-val';
+    state.score++;
+    state.results.push(result);
+    submitResult(result);
+    showFeedback('✅ Great job!', 'correct-msg');
+    launchConfetti(display);
+    speakText(['Wonderful!','Amazing!','Super!','You got it!'][Math.floor(Math.random()*4)]);
+    setTimeout(() => {
+      hideFeedback();
+      state.current++;
+      if (state.current < state.questions.length) loadQuestion();
+      else showComplete();
+    }, 1400);
+  } else {
+    display.className = 'number-display wrong-val';
+    speakText('Try again!');
+    showFeedback('🤔 Try again!', 'wrong-msg');
+    setTimeout(() => {
+      hideFeedback();
+      // Reset for retry
+      state.answered = false;
+      display.textContent = '?';
+      display.className   = 'number-display';
+      keypadBtns.forEach(b => b.disabled = false);
+    }, 900);
+  }
 }
 </script>
 </body>

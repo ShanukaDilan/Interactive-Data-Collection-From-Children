@@ -1,142 +1,299 @@
 [
   {
     "id": "q01",
-    "category": "Animals",
-    "speak": "Touch the cat!",
-    "hint": "Cat",
+    "category": "Phonics - Beginning Sound",
+    "speak": "What sound does ANT start with? Pick the right letter!",
+    "hint": "ANT",
+    "question_emoji": "🐜",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Cat",    "correct": true,  "bg": "#FFF0F0", "emoji": "🐱", "image": null},
-      {"label": "Dog",    "correct": false, "bg": "#F0F4FF", "emoji": "🐶", "image": null},
-      {"label": "Rabbit", "correct": false, "bg": "#F0FFF4", "emoji": "🐰", "image": null},
-      {"label": "Duck",   "correct": false, "bg": "#FFFBF0", "emoji": "🦆", "image": null}
+      {"label": "a", "correct": true,  "bg": "#FFF0F0", "emoji": "a", "image": null},
+      {"label": "f", "correct": false, "bg": "#F0F4FF", "emoji": "f", "image": null},
+      {"label": "s", "correct": false, "bg": "#F0FFF4", "emoji": "s", "image": null}
     ]
   },
   {
     "id": "q02",
-    "category": "Animals",
-    "speak": "Touch the dog!",
-    "hint": "Dog",
+    "category": "Phonics - Beginning Sound",
+    "speak": "What sound does BALL start with? Pick the right letter!",
+    "hint": "BALL",
+    "question_emoji": "⚽",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Cat",  "correct": false, "bg": "#FFF0F0", "emoji": "🐱", "image": null},
-      {"label": "Dog",  "correct": true,  "bg": "#F0F4FF", "emoji": "🐶", "image": null},
-      {"label": "Bird", "correct": false, "bg": "#F0FFF4", "emoji": "🐦", "image": null},
-      {"label": "Fish", "correct": false, "bg": "#F0FFFF", "emoji": "🐠", "image": null}
+      {"label": "b", "correct": true,  "bg": "#FFF0F0", "emoji": "b", "image": null},
+      {"label": "g", "correct": false, "bg": "#F0F4FF", "emoji": "g", "image": null},
+      {"label": "f", "correct": false, "bg": "#F0FFF4", "emoji": "f", "image": null}
     ]
   },
   {
     "id": "q03",
-    "category": "Colors",
-    "speak": "Touch the red color!",
-    "hint": "Red",
+    "category": "Phonics - Beginning Sound",
+    "speak": "What sound does NEST start with? Pick the right letter!",
+    "hint": "NEST",
+    "question_emoji": "🪺",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Red",    "correct": true,  "bg": "#FFF0F0", "emoji": "🔴", "image": null},
-      {"label": "Blue",   "correct": false, "bg": "#F0F4FF", "emoji": "🔵", "image": null},
-      {"label": "Yellow", "correct": false, "bg": "#FFFDF0", "emoji": "🟡", "image": null},
-      {"label": "Green",  "correct": false, "bg": "#F0FFF4", "emoji": "🟢", "image": null}
+      {"label": "n", "correct": true,  "bg": "#FFF0F0", "emoji": "n", "image": null},
+      {"label": "m", "correct": false, "bg": "#F0F4FF", "emoji": "m", "image": null},
+      {"label": "h", "correct": false, "bg": "#F0FFF4", "emoji": "h", "image": null}
     ]
   },
   {
     "id": "q04",
-    "category": "Shapes",
-    "speak": "Touch the circle!",
-    "hint": "Circle",
+    "category": "Letters - Capital Recognition",
+    "speak": "Find the capital letter for lowercase g!",
+    "hint": "Find the capital!",
+    "question_emoji": "g",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Circle",   "correct": true,  "bg": "#FFF0F8", "emoji": "⭕",     "image": null},
-      {"label": "Square",   "correct": false, "bg": "#F0F0F0", "emoji": "⬛",     "image": null},
-      {"label": "Triangle", "correct": false, "bg": "#FFF8F0", "emoji": "🔺", "image": null},
-      {"label": "Diamond",  "correct": false, "bg": "#F0FCFF", "emoji": "💠", "image": null}
+      {"label": "G", "correct": true,  "bg": "#FFF0F0", "emoji": "G", "image": null},
+      {"label": "B", "correct": false, "bg": "#F0F4FF", "emoji": "B", "image": null},
+      {"label": "L", "correct": false, "bg": "#F0FFF4", "emoji": "L", "image": null}
     ]
   },
   {
     "id": "q05",
-    "category": "Food",
-    "speak": "Touch the apple!",
-    "hint": "Apple",
+    "category": "Letters - Capital Recognition",
+    "speak": "Find the capital letter for lowercase h!",
+    "hint": "Find the capital!",
+    "question_emoji": "h",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Apple",  "correct": true,  "bg": "#FFF0F0", "emoji": "🍎", "image": null},
-      {"label": "Banana", "correct": false, "bg": "#FFFDF0", "emoji": "🍌", "image": null},
-      {"label": "Grapes", "correct": false, "bg": "#F8F0FF", "emoji": "🍇", "image": null},
-      {"label": "Orange", "correct": false, "bg": "#FFF8F0", "emoji": "🍊", "image": null}
+      {"label": "H", "correct": true,  "bg": "#FFF0F0", "emoji": "H", "image": null},
+      {"label": "R", "correct": false, "bg": "#F0F4FF", "emoji": "R", "image": null},
+      {"label": "B", "correct": false, "bg": "#F0FFF4", "emoji": "B", "image": null}
     ]
   },
   {
     "id": "q06",
-    "category": "Numbers",
-    "speak": "Touch the number two!",
-    "hint": "Two",
+    "category": "Letters - Capital Recognition",
+    "speak": "Find the capital letter for lowercase q!",
+    "hint": "Find the capital!",
+    "question_emoji": "q",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "One",   "correct": false, "bg": "#FFF0F0", "emoji": "1️⃣", "image": null},
-      {"label": "Two",   "correct": true,  "bg": "#F0F4FF", "emoji": "2️⃣", "image": null},
-      {"label": "Three", "correct": false, "bg": "#F0FFF4", "emoji": "3️⃣", "image": null},
-      {"label": "Four",  "correct": false, "bg": "#FFFBF0", "emoji": "4️⃣", "image": null}
+      {"label": "Q", "correct": true,  "bg": "#FFF0F0", "emoji": "Q", "image": null},
+      {"label": "M", "correct": false, "bg": "#F0F4FF", "emoji": "M", "image": null},
+      {"label": "T", "correct": false, "bg": "#F0FFF4", "emoji": "T", "image": null}
     ]
   },
   {
     "id": "q07",
-    "category": "Animals",
-    "speak": "Touch the elephant!",
-    "hint": "Elephant",
+    "category": "Phonics - Find the Image",
+    "speak": "Find the picture that starts with the letter U!",
+    "hint": "Starts with U!",
+    "question_emoji": "u",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Elephant", "correct": true,  "bg": "#F4F0FF", "emoji": "🐘", "image": null},
-      {"label": "Lion",     "correct": false, "bg": "#FFF8E0", "emoji": "🦁", "image": null},
-      {"label": "Bear",     "correct": false, "bg": "#FFF4EC", "emoji": "🐻", "image": null},
-      {"label": "Fox",      "correct": false, "bg": "#FFF2EC", "emoji": "🦊", "image": null}
+      {"label": "Umbrella", "correct": true,  "bg": "#FFF0F0", "emoji": "☂️", "image": null},
+      {"label": "Kite",     "correct": false, "bg": "#F0F4FF", "emoji": "🪁", "image": null},
+      {"label": "Bird",     "correct": false, "bg": "#F0FFF4", "emoji": "🐦", "image": null}
     ]
   },
   {
     "id": "q08",
-    "category": "Colors",
-    "speak": "Touch the blue color!",
-    "hint": "Blue",
+    "category": "Phonics - Find the Image",
+    "speak": "Find the picture that starts with the letter L!",
+    "hint": "Starts with L!",
+    "question_emoji": "l",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Red",    "correct": false, "bg": "#FFF0F0", "emoji": "🔴", "image": null},
-      {"label": "Blue",   "correct": true,  "bg": "#F0F4FF", "emoji": "🔵", "image": null},
-      {"label": "Orange", "correct": false, "bg": "#FFF8F0", "emoji": "🟠", "image": null},
-      {"label": "Purple", "correct": false, "bg": "#F8F0FF", "emoji": "🟣", "image": null}
+      {"label": "Leaf", "correct": true,  "bg": "#F0FFF4", "emoji": "🍃", "image": null},
+      {"label": "Cup",  "correct": false, "bg": "#FFF0F0", "emoji": "☕", "image": null},
+      {"label": "Door", "correct": false, "bg": "#F0F4FF", "emoji": "🚪", "image": null}
     ]
   },
   {
     "id": "q09",
-    "category": "Food",
-    "speak": "Touch the banana!",
-    "hint": "Banana",
+    "category": "Phonics - Find the Image",
+    "speak": "Find the picture that starts with the letter T!",
+    "hint": "Starts with T!",
+    "question_emoji": "t",
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Strawberry", "correct": false, "bg": "#FFF0F0", "emoji": "🍓", "image": null},
-      {"label": "Banana",     "correct": true,  "bg": "#FFFDF0", "emoji": "🍌", "image": null},
-      {"label": "Peach",      "correct": false, "bg": "#FFF8F0", "emoji": "🍑", "image": null},
-      {"label": "Cherry",     "correct": false, "bg": "#FFF0F5", "emoji": "🍒", "image": null}
+      {"label": "Tap",    "correct": true,  "bg": "#F0F4FF", "emoji": "🚿", "image": null},
+      {"label": "Acorn",  "correct": false, "bg": "#FFF8F0", "emoji": "🌰", "image": null},
+      {"label": "Bottle", "correct": false, "bg": "#F0FFF4", "emoji": "🍼", "image": null}
     ]
   },
   {
     "id": "q10",
-    "category": "Shapes",
-    "speak": "Touch the star!",
-    "hint": "Star",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the coins and press the number!",
+    "hint": "Count the coins!",
+    "question_emoji": "🪙🪙🪙",
+    "correct_number": 3,
     "image": null,
     "audio": null,
     "options": [
-      {"label": "Star",  "correct": true,  "bg": "#FFFDF0", "emoji": "⭐",         "image": null},
-      {"label": "Heart", "correct": false, "bg": "#FFF0F0", "emoji": "❤️",   "image": null},
-      {"label": "Moon",  "correct": false, "bg": "#F0F0FF", "emoji": "🌙",   "image": null},
-      {"label": "Cloud", "correct": false, "bg": "#F0F8FF", "emoji": "☁️",   "image": null}
+      {"label": "3", "correct": true,  "bg": "#FFF0F0", "emoji": "3", "image": null},
+      {"label": "5", "correct": false, "bg": "#F0F4FF", "emoji": "5", "image": null},
+      {"label": "8", "correct": false, "bg": "#F0FFF4", "emoji": "8", "image": null}
+    ]
+  },
+  {
+    "id": "q11",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the butterflies and press the number!",
+    "hint": "Count the butterflies!",
+    "question_emoji": "🦋🦋🦋🦋",
+    "correct_number": 4,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "4", "correct": true,  "bg": "#F8F0FF", "emoji": "4", "image": null},
+      {"label": "6", "correct": false, "bg": "#F0F4FF", "emoji": "6", "image": null},
+      {"label": "8", "correct": false, "bg": "#F0FFF4", "emoji": "8", "image": null}
+    ]
+  },
+  {
+    "id": "q12",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the stars and press the number!",
+    "hint": "Count the stars!",
+    "question_emoji": "⭐⭐⭐⭐⭐⭐⭐",
+    "correct_number": 7,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "7", "correct": true,  "bg": "#FFFDF0", "emoji": "7", "image": null},
+      {"label": "5", "correct": false, "bg": "#F0F4FF", "emoji": "5", "image": null},
+      {"label": "9", "correct": false, "bg": "#F0FFF4", "emoji": "9", "image": null}
+    ]
+  },
+  {
+    "id": "q13",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the apples and press the number!",
+    "hint": "Count the apples!",
+    "question_emoji": "🍎🍎",
+    "correct_number": 2,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "2", "correct": true,  "bg": "#FFF0F0", "emoji": "2", "image": null},
+      {"label": "4", "correct": false, "bg": "#F0F4FF", "emoji": "4", "image": null},
+      {"label": "6", "correct": false, "bg": "#F0FFF4", "emoji": "6", "image": null}
+    ]
+  },
+  {
+    "id": "q14",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the flowers and press the number!",
+    "hint": "Count the flowers!",
+    "question_emoji": "🌸🌸🌸🌸🌸🌸",
+    "correct_number": 6,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "6", "correct": true,  "bg": "#FFF0F8", "emoji": "6", "image": null},
+      {"label": "4", "correct": false, "bg": "#F0F4FF", "emoji": "4", "image": null},
+      {"label": "8", "correct": false, "bg": "#F0FFF4", "emoji": "8", "image": null}
+    ]
+  },
+  {
+    "id": "q15",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the dogs and press the number!",
+    "hint": "Count the dogs!",
+    "question_emoji": "🐶🐶🐶🐶🐶",
+    "correct_number": 5,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "5", "correct": true,  "bg": "#FFF8E0", "emoji": "5", "image": null},
+      {"label": "3", "correct": false, "bg": "#F0F4FF", "emoji": "3", "image": null},
+      {"label": "7", "correct": false, "bg": "#F0FFF4", "emoji": "7", "image": null}
+    ]
+  },
+  {
+    "id": "q16",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the elephants and press the number!",
+    "hint": "Count the elephants!",
+    "question_emoji": "🐘",
+    "correct_number": 1,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "1", "correct": true,  "bg": "#F4F0FF", "emoji": "1", "image": null},
+      {"label": "3", "correct": false, "bg": "#F0F4FF", "emoji": "3", "image": null},
+      {"label": "5", "correct": false, "bg": "#F0FFF4", "emoji": "5", "image": null}
+    ]
+  },
+  {
+    "id": "q17",
+    "type": "number-input",
+    "category": "Numbers - Counting",
+    "speak": "Count the fish and press the number!",
+    "hint": "Count the fish!",
+    "question_emoji": "🐟🐟🐟🐟🐟🐟🐟🐟",
+    "correct_number": 8,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "8", "correct": true,  "bg": "#F0F8FF", "emoji": "8", "image": null},
+      {"label": "6", "correct": false, "bg": "#F0F4FF", "emoji": "6", "image": null},
+      {"label": "9", "correct": false, "bg": "#F0FFF4", "emoji": "9", "image": null}
+    ]
+  },
+  {
+    "id": "q18",
+    "category": "Objects - Identification",
+    "speak": "Touch the chicken!",
+    "hint": "Touch the chicken!",
+    "question_emoji": null,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Chicken", "correct": true,  "bg": "#FFF8E0", "emoji": "🐔", "image": null},
+      {"label": "House",   "correct": false, "bg": "#F0F4FF", "emoji": "🏠", "image": null},
+      {"label": "Bell",    "correct": false, "bg": "#FFF0F0", "emoji": "🔔", "image": null}
+    ]
+  },
+  {
+    "id": "q19",
+    "category": "Objects - Identification",
+    "speak": "Touch the bell!",
+    "hint": "Touch the bell!",
+    "question_emoji": null,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Chicken", "correct": false, "bg": "#FFF8E0", "emoji": "🐔", "image": null},
+      {"label": "House",   "correct": false, "bg": "#F0F4FF", "emoji": "🏠", "image": null},
+      {"label": "Bell",    "correct": true,  "bg": "#FFF0F0", "emoji": "🔔", "image": null}
+    ]
+  },
+  {
+    "id": "q20",
+    "category": "Colors",
+    "speak": "Touch the red ball!",
+    "hint": "Touch the red ball!",
+    "question_emoji": null,
+    "image": null,
+    "audio": null,
+    "options": [
+      {"label": "Red",    "correct": true,  "bg": "#FFE0E0", "emoji": "🔴", "image": null},
+      {"label": "Blue",   "correct": false, "bg": "#E0E8FF", "emoji": "🔵", "image": null},
+      {"label": "Green",  "correct": false, "bg": "#E0FFE8", "emoji": "🟢", "image": null},
+      {"label": "Yellow", "correct": false, "bg": "#FFFFE0", "emoji": "🟡", "image": null}
     ]
   }
 ]
