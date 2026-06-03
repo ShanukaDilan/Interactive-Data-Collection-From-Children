@@ -20,7 +20,14 @@ function getDb(): ?PDO
     if ($pdo !== false) return $pdo;
 
     $pdo = _connectDb();
-    if ($pdo) _initSchema($pdo);
+    if ($pdo) {
+        try {
+            _initSchema($pdo);
+        } catch (Throwable $e) {
+            error_log("DB _initSchema error: " . $e->getMessage());
+            // Connection still works even if schema init had a problem
+        }
+    }
     return $pdo;
 }
 
@@ -111,25 +118,32 @@ function _initSchema(PDO $pdo): void
     $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
     if ($driver === 'mysql') {
+        // Separate table creation from index creation for maximum compatibility
         $pdo->exec("CREATE TABLE IF NOT EXISTS responses (
-            id              INT AUTO_INCREMENT PRIMARY KEY,
-            session_id      VARCHAR(64),
-            child_age       TINYINT UNSIGNED,
-            child_id        VARCHAR(60),
-            quiz_mode       VARCHAR(20)   DEFAULT 'correct',
-            question_id     VARCHAR(20),
-            question_text   VARCHAR(200),
-            category        VARCHAR(60),
-            correct_label   VARCHAR(100),
-            selected_label  VARCHAR(100),
-            is_correct      TINYINT(1)    DEFAULT 0,
-            attempts        TINYINT UNSIGNED DEFAULT 1,
-            response_time_ms INT UNSIGNED DEFAULT 0,
-            created_at      DATETIME      DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_session  (session_id),
-            INDEX idx_category (category),
-            INDEX idx_age      (child_age)
+            id               INT AUTO_INCREMENT PRIMARY KEY,
+            session_id       VARCHAR(64),
+            child_age        TINYINT,
+            child_id         VARCHAR(60),
+            quiz_mode        VARCHAR(20)  DEFAULT 'correct',
+            question_id      VARCHAR(20),
+            question_text    VARCHAR(200),
+            category         VARCHAR(60),
+            correct_label    VARCHAR(100),
+            selected_label   VARCHAR(100),
+            is_correct       TINYINT      DEFAULT 0,
+            attempts         TINYINT      DEFAULT 1,
+            response_time_ms INT          DEFAULT 0,
+            created_at       DATETIME     DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        // Add indexes separately — silently skip if they already exist
+        foreach ([
+            "CREATE INDEX idx_resp_session  ON responses (session_id)",
+            "CREATE INDEX idx_resp_category ON responses (category)",
+            "CREATE INDEX idx_resp_age      ON responses (child_age)",
+        ] as $sql) {
+            try { $pdo->exec($sql); } catch (Throwable $e) { /* already exists */ }
+        }
     } else {
         $pdo->exec("CREATE TABLE IF NOT EXISTS responses (
             id               SERIAL PRIMARY KEY,
@@ -147,9 +161,12 @@ function _initSchema(PDO $pdo): void
             response_time_ms INT          DEFAULT 0,
             created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
         )");
-        // Indexes are less critical on Postgres but nice to have
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_resp_session  ON responses(session_id)");
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_resp_category ON responses(category)");
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_resp_age      ON responses(child_age)");
+        foreach ([
+            "CREATE INDEX IF NOT EXISTS idx_resp_session  ON responses (session_id)",
+            "CREATE INDEX IF NOT EXISTS idx_resp_category ON responses (category)",
+            "CREATE INDEX IF NOT EXISTS idx_resp_age      ON responses (child_age)",
+        ] as $sql) {
+            try { $pdo->exec($sql); } catch (Throwable $e) { /* already exists */ }
+        }
     }
 }

@@ -43,7 +43,12 @@ $record = [
 
 // ── Try database first ───────────────────────────────────────────
 require_once __DIR__ . '/db.php';
-$pdo = getDb();
+try {
+    $pdo = getDb();
+} catch (Throwable $e) {
+    error_log('submit getDb: ' . $e->getMessage());
+    $pdo = null;
+}
 
 if ($pdo) {
     try {
