@@ -64,6 +64,36 @@ if ($loggedIn && isset($_GET['download']) && $_GET['download'] === 'csv') {
     exit;
 }
 
+// ── Delete actions (before HTML output) ─────────────────────────
+if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $act = $_POST['action'] ?? '';
+
+    if ($act === 'delete_record') {
+        // AJAX: delete one row, return JSON
+        header('Content-Type: application/json');
+        $id  = (int)($_POST['record_id'] ?? 0);
+        try {
+            $pdo = getDb();
+            if ($pdo && $id > 0) {
+                $pdo->prepare("DELETE FROM responses WHERE id = ?")->execute([$id]);
+            }
+        } catch (Throwable $e) { error_log('delete_record: ' . $e->getMessage()); }
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($act === 'reset_all') {
+        // Form POST: delete everything, redirect
+        try {
+            $pdo = getDb();
+            if ($pdo) $pdo->exec("DELETE FROM responses");
+        } catch (Throwable $e) { error_log('reset_all: ' . $e->getMessage()); }
+        if (file_exists(DATA_FILE)) file_put_contents(DATA_FILE, '');
+        header('Location: admin.php?view=dashboard');
+        exit;
+    }
+}
+
 // ── Load response records (DB first, file fallback) ───────────────
 function loadData(): array {
     $pdo = getDb();
@@ -309,6 +339,28 @@ $qsData = $loggedIn ? loadQuestions() : [];
       margin-bottom:24px;
     }
     .download-btn:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(46,204,113,.4); }
+
+    /* ── RESET / ROW-DELETE ─────────────────────────────────────── */
+    .reset-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      background:linear-gradient(135deg,#e74c3c,#c0392b);
+      color:white; text-decoration:none;
+      padding:11px 24px; border-radius:12px;
+      font-family:'Fredoka One',cursive; font-size:1.05rem;
+      box-shadow:0 6px 20px rgba(231,76,60,.3);
+      transition:transform .15s,box-shadow .15s;
+      margin-bottom:24px; margin-left:10px;
+      border:none; cursor:pointer;
+    }
+    .reset-btn:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(231,76,60,.4); }
+    .btn-row-del {
+      background:#fff5f5; color:var(--coral);
+      border:1.5px solid #fdd; border-radius:7px;
+      padding:4px 10px; font-size:.78rem; font-weight:800;
+      cursor:pointer; transition:opacity .12s; white-space:nowrap;
+    }
+    .btn-row-del:hover { opacity:.75; }
+    .btn-row-del:disabled { opacity:.4; cursor:not-allowed; }
 
     .empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
     .empty-state .empty-icon { font-size:3.5rem; margin-bottom:12px; }
@@ -859,7 +911,13 @@ $qsData = $loggedIn ? loadQuestions() : [];
 ════════════════════════════════════════════════════════════ -->
 
 <?php if ($rows): ?>
-  <a href="?download=csv" class="download-btn">📥 Download All Data as CSV</a>
+  <div style="display:flex;flex-wrap:wrap;gap:0;align-items:center;margin-bottom:0">
+    <a href="?download=csv" class="download-btn" style="margin-bottom:24px">📥 Download All Data as CSV</a>
+    <form method="POST" onsubmit="return confirm('Delete ALL records? This cannot be undone.')">
+      <input type="hidden" name="action" value="reset_all">
+      <button type="submit" class="reset-btn">🗑 Reset All Data</button>
+    </form>
+  </div>
 <?php endif; ?>
 
 <?php if ($stats): ?>
@@ -962,11 +1020,12 @@ $qsData = $loggedIn ? loadQuestions() : [];
     <thead><tr>
       <th>Time</th><th>Child ID</th><th>Age</th><th>Mode</th><th>Category</th>
       <th>Question</th><th>Correct Ans</th><th>Selected</th>
-      <th>Result</th><th>Attempts</th><th>Time (ms)</th>
+      <th>Result</th><th>Attempts</th><th>Time (ms)</th><th></th>
     </tr></thead>
     <tbody>
-    <?php foreach ($paged as $r): ?>
-      <tr>
+    <?php foreach ($paged as $r):
+      $rid = $r['id'] ?? null; ?>
+      <tr id="resp-row-<?= htmlspecialchars((string)($rid ?? '')) ?>">
         <td style="font-size:.8rem;color:var(--muted)"><?= htmlspecialchars(substr($r['timestamp']??'',0,16)) ?></td>
         <td><?= htmlspecialchars($r['child_id'] ?? '—') ?></td>
         <td style="font-weight:800"><?= intval($r['child_age'] ?? 0) ?></td>
@@ -989,6 +1048,11 @@ $qsData = $loggedIn ? loadQuestions() : [];
         </td>
         <td><?= intval($r['attempts'] ?? 1) ?></td>
         <td><?= number_format(intval($r['response_time_ms'] ?? 0)) ?></td>
+        <td>
+          <?php if ($rid): ?>
+            <button class="btn-row-del" onclick="delRecord(<?= (int)$rid ?>, this)">🗑 Del</button>
+          <?php endif; ?>
+        </td>
       </tr>
     <?php endforeach; ?>
     </tbody>
@@ -1017,6 +1081,37 @@ $qsData = $loggedIn ? loadQuestions() : [];
 
 <!-- Toast notification -->
 <div class="toast" id="toast"></div>
+
+<?php if ($loggedIn && $view === 'dashboard'): ?>
+<script>
+async function delRecord(id, btn) {
+  if (!confirm('Delete this response record?')) return;
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    const fd = new FormData();
+    fd.append('action', 'delete_record');
+    fd.append('record_id', id);
+    const res  = await fetch('admin.php', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      const row = document.getElementById('resp-row-' + id);
+      if (row) {
+        row.style.transition = 'opacity .3s';
+        row.style.opacity = '0';
+        setTimeout(() => row.remove(), 320);
+      }
+    } else {
+      btn.disabled = false;
+      btn.textContent = '🗑 Del';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '🗑 Del';
+  }
+}
+</script>
+<?php endif; ?>
 
 <?php if ($loggedIn && $view === 'questions'): ?>
 <script>
