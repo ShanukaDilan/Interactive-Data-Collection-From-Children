@@ -28,6 +28,7 @@
         </div>
 
         <nav class="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
+            <a href="{{ route('play.show') }}" class="btn btn-primary mb-3 w-full py-3">▶ Start a quiz session</a>
             <x-admin.nav-link route="admin.dashboard" icon="📊">Dashboard</x-admin.nav-link>
             <x-admin.nav-link route="admin.studies.*" :href="route('admin.studies.index')" icon="🧪">Studies</x-admin.nav-link>
             @can('viewAny', App\Models\Question::class)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\PlayController;
 use App\Livewire\Admin\Account\ChangePassword;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Participants\ParticipantIndex;
@@ -23,6 +24,12 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->prefix('play')->name('play.')->group(function (): void {
+    Route::get('/', [PlayController::class, 'show'])->name('show');
+    Route::get('/studies/{study}/bundle', [PlayController::class, 'bundle'])->name('bundle');
+    Route::post('/sync', [PlayController::class, 'sync'])->middleware('throttle:120,1')->name('sync');
+});
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): void {
     Route::get('/', Dashboard::class)->name('dashboard');
