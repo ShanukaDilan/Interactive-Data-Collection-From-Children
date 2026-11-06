@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ParentReportController;
 use App\Http\Controllers\PlayController;
 use App\Livewire\Admin\Account\ChangePassword;
+use App\Livewire\Admin\Analytics\ParticipantReport;
+use App\Livewire\Admin\Analytics\SessionDetail;
+use App\Livewire\Admin\Analytics\StudyAnalytics;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Participants\ParticipantIndex;
 use App\Livewire\Admin\Questions\QuestionForm;
@@ -25,6 +29,11 @@ Route::middleware('guest')->group(function (): void {
 
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
+Route::get('/r/{token}', [ParentReportController::class, 'show'])
+    ->middleware('throttle:30,1')
+    ->where('token', '[A-Za-z0-9]{1,64}')
+    ->name('parent-report.show');
+
 Route::middleware('auth')->prefix('play')->name('play.')->group(function (): void {
     Route::get('/', [PlayController::class, 'show'])->name('show');
     Route::get('/studies/{study}/bundle', [PlayController::class, 'bundle'])->name('bundle');
@@ -43,6 +52,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
     Route::get('/questions/{question}/edit', QuestionForm::class)->name('questions.edit')->can('update', 'question');
 
     Route::get('/participants', ParticipantIndex::class)->name('participants.index');
+    Route::get('/participants/{participant}/report', ParticipantReport::class)->name('participants.report');
+
+    Route::get('/analytics', StudyAnalytics::class)->name('analytics');
+    Route::get('/sessions/{session:uuid}', SessionDetail::class)->name('sessions.show');
 
     Route::get('/users', UserIndex::class)->name('users.index')->can('viewAny', User::class);
     Route::get('/users/create', UserForm::class)->name('users.create')->can('create', User::class);

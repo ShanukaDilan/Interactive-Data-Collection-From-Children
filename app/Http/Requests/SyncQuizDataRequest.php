@@ -47,6 +47,20 @@ class SyncQuizDataRequest extends FormRequest
             'sessions.*.responses.*.response_time_ms' => ['required', 'integer', 'between:0,3600000'],
             'sessions.*.responses.*.position' => ['nullable', 'integer', 'between:0,1000'],
             'sessions.*.responses.*.answered_at' => ['nullable', 'date'],
+            'sessions.*.responses.*.first_tap_ms' => ['nullable', 'integer', 'between:0,3600000'],
+            'sessions.*.responses.*.prompt_ended_ms' => ['nullable', 'integer', 'between:0,3600000'],
+            'sessions.*.responses.*.replay_count' => ['nullable', 'integer', 'between:0,1000'],
+            'sessions.*.responses.*.answered_during_prompt' => ['nullable', 'boolean'],
+            'sessions.*.responses.*.option_order' => ['nullable', 'array', 'max:12'],
+            'sessions.*.responses.*.option_order.*' => ['nullable', 'string', 'max:100'],
+            'sessions.*.responses.*.selected_position' => ['nullable', 'integer', 'between:0,11'],
+            'sessions.*.responses.*.taps' => ['nullable', 'array', 'max:50'],
+            'sessions.*.responses.*.taps.*.selected_label' => ['nullable', 'string', 'max:100'],
+            'sessions.*.responses.*.taps.*.selected_number' => ['nullable', 'integer', 'between:0,999'],
+            'sessions.*.responses.*.taps.*.screen_position' => ['nullable', 'integer', 'between:0,11'],
+            'sessions.*.responses.*.taps.*.is_correct' => ['required', 'boolean'],
+            'sessions.*.responses.*.taps.*.elapsed_ms' => ['required', 'integer', 'between:0,3600000'],
+            'sessions.*.responses.*.taps.*.during_prompt' => ['nullable', 'boolean'],
         ];
     }
 }

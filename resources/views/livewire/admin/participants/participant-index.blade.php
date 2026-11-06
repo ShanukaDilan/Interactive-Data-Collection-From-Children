@@ -52,6 +52,7 @@
                             </td>
                             <td class="text-right">{{ $participant->quiz_sessions_count }}</td>
                             <td class="whitespace-nowrap text-right">
+                                <a href="{{ route('admin.participants.report', $participant) }}" class="btn btn-secondary btn-sm" wire:navigate>📊 Report</a>
                                 @can('update', $participant)
                                     <button type="button" wire:click="edit({{ $participant->id }})" class="btn btn-secondary btn-sm">Edit</button>
                                 @endcan

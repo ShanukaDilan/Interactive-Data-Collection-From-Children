@@ -195,6 +195,40 @@ it('validates the payload', function () {
         ->assertJsonValidationErrors(['sessions.0.uuid', 'sessions.0.quiz_mode']);
 });
 
+it('stores every tap and the interaction details, without duplicating taps on re-send', function () {
+    $payload = sessionPayload($this->study, [], 1);
+    $payload['responses'][0] = array_merge($payload['responses'][0], [
+        'attempts' => 3,
+        'first_tap_ms' => 900,
+        'prompt_ended_ms' => 1800,
+        'replay_count' => 2,
+        'answered_during_prompt' => false,
+        'option_order' => ['Dog', 'Cat', 'Cow'],
+        'selected_position' => 1,
+        'taps' => [
+            ['selected_label' => 'Dog', 'screen_position' => 0, 'is_correct' => false, 'elapsed_ms' => 900, 'during_prompt' => true],
+            ['selected_label' => 'Cow', 'screen_position' => 2, 'is_correct' => false, 'elapsed_ms' => 2500, 'during_prompt' => false],
+            ['selected_label' => 'Cat', 'screen_position' => 1, 'is_correct' => true, 'elapsed_ms' => 4100, 'during_prompt' => false],
+        ],
+    ]);
+
+    $this->actingAs($this->teacher)->postJson(route('play.sync'), ['sessions' => [$payload]])->assertOk();
+    $this->actingAs($this->teacher)->postJson(route('play.sync'), ['sessions' => [$payload]])->assertOk();
+
+    $response = QuizResponse::with('taps')->sole();
+
+    expect($response->replay_count)->toBe(2)
+        ->and($response->first_tap_ms)->toBe(900)
+        ->and($response->prompt_ended_ms)->toBe(1800)
+        ->and($response->option_order)->toBe(['Dog', 'Cat', 'Cow'])
+        ->and($response->selected_position)->toBe(1)
+        ->and($response->isFirstTryCorrect())->toBeFalse()
+        ->and($response->taps)->toHaveCount(3)
+        ->and($response->taps->pluck('selected_label')->all())->toBe(['Dog', 'Cow', 'Cat'])
+        ->and($response->taps->first()->during_prompt)->toBeTrue()
+        ->and($response->taps->last()->sequence)->toBe(3);
+});
+
 it('shows synced sessions on the dashboard', function () {
     $this->actingAs($this->teacher)->postJson(route('play.sync'), ['sessions' => [sessionPayload($this->study)]]);
 

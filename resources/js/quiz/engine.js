@@ -22,6 +22,7 @@ export class QuizEngine {
         this.onAnswer = onAnswer;
         this.onComplete = onComplete;
         this.timers = [];
+        this.playToken = 0;
 
         this.el = {
             progressFill: document.getElementById('progressFill'),
@@ -86,10 +87,44 @@ export class QuizEngine {
         return this.state.questions[this.state.current];
     }
 
-    replay() {
-        if (this.state && this.question) {
-            this.speaker.playQuestion(this.question, this.el.speakBtn);
+    /**
+     * Play the spoken prompt. Manual taps on 🔊 count as replays; the first time the prompt
+     * finishes is recorded so taps can be classed as "before the question was fully heard".
+     */
+    replay(isAutomatic = false) {
+        const s = this.state;
+        if (!s || !this.question) {
+            return;
         }
+        if (!isAutomatic && !s.answered) {
+            s.replays++;
+        }
+
+        const token = ++this.playToken;
+        const questionIndex = s.current;
+        this.speaker.playQuestion(this.question, this.el.speakBtn, () => {
+            // Ignore end events from prompts that were cancelled or belong to an earlier question.
+            if (token !== this.playToken || questionIndex !== s.current) {
+                return;
+            }
+            s.promptEndedMs ??= Date.now() - s.questionStartTime;
+        });
+    }
+
+    elapsed() {
+        return Date.now() - this.state.questionStartTime;
+    }
+
+    /** Log one tap / keypad submission for behavioural analysis. */
+    logTap({ label, number = null, position = null, isCorrect }) {
+        this.state.taps.push({
+            selected_label: label,
+            selected_number: number,
+            screen_position: position,
+            is_correct: isCorrect,
+            elapsed_ms: this.elapsed(),
+            during_prompt: this.state.promptEndedMs === null,
+        });
     }
 
     loadQuestion() {
@@ -98,6 +133,11 @@ export class QuizEngine {
         s.questionStartTime = Date.now();
         s.attempts = 0;
         s.answered = false;
+        s.taps = [];
+        s.replays = 0;
+        s.promptEndedMs = null;
+        s.optionOrder = null;
+        s.selectedPosition = null;
 
         this.el.progressFill.style.width = `${(s.current / s.questions.length) * 100}%`;
         this.el.progressLabel.textContent = `${s.current + 1} / ${s.questions.length}`;
@@ -136,7 +176,7 @@ export class QuizEngine {
             this.buildOptions(q);
         }
 
-        this.later(() => this.replay(), 600);
+        this.later(() => this.replay(true), 600);
     }
 
     buildOptions(q) {
@@ -145,8 +185,9 @@ export class QuizEngine {
         grid.classList.toggle('cols-3', q.options.length === 3 || q.options.length === 6 || q.options.length === 5);
 
         const options = this.state.shuffleOptions ? shuffle([...q.options]) : [...q.options];
+        this.state.optionOrder = options.map((opt) => opt.label);
 
-        options.forEach((opt) => {
+        options.forEach((opt, position) => {
             const card = document.createElement('button');
             card.type = 'button';
             card.className = 'option-card';
@@ -173,7 +214,7 @@ export class QuizEngine {
 
             card.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
-                this.handleChoice(card, opt);
+                this.handleChoice(card, opt, position);
             });
             grid.appendChild(card);
         });
@@ -191,6 +232,9 @@ export class QuizEngine {
     }
 
     record(q, { selectedLabel, selectedNumber = null, isCorrect }) {
+        const s = this.state;
+        const lastTap = s.taps.at(-1);
+
         this.onAnswer({
             client_uuid: uuid(),
             question_id: q.id,
@@ -206,15 +250,24 @@ export class QuizEngine {
             response_time_ms: Date.now() - this.state.questionStartTime,
             position: this.state.current,
             answered_at: new Date().toISOString(),
+            first_tap_ms: s.taps[0]?.elapsed_ms ?? null,
+            prompt_ended_ms: s.promptEndedMs,
+            replay_count: s.replays,
+            answered_during_prompt: lastTap?.during_prompt ?? false,
+            option_order: s.optionOrder,
+            selected_position: s.selectedPosition,
+            taps: s.taps,
         });
     }
 
-    handleChoice(card, opt) {
+    handleChoice(card, opt, position) {
         const s = this.state;
         if (s.answered) {
             return;
         }
         s.attempts++;
+        s.selectedPosition = position;
+        this.logTap({ label: opt.label, position, isCorrect: !!opt.correct });
         const q = this.question;
         const allCards = this.el.optionsGrid.querySelectorAll('.option-card');
 
@@ -262,6 +315,7 @@ export class QuizEngine {
         const display = this.el.numberDisplay;
         const isCorrect = input === correctAnswer;
         const answer = { selectedLabel: input, selectedNumber: Number.parseInt(input, 10), isCorrect };
+        this.logTap({ label: input, number: answer.selectedNumber, isCorrect });
 
         if (s.mode === 'free') {
             display.className = 'number-display correct-val';

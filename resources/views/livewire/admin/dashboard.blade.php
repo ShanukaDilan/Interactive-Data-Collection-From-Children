@@ -30,6 +30,7 @@
                         <th>Age</th>
                         <th>Mode</th>
                         <th class="text-right">Score</th>
+                        <th class="text-right"><span class="sr-only">Open</span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,6 +42,7 @@
                             <td>{{ $session->child_age ?? '—' }}</td>
                             <td>{{ $session->quiz_mode->label() }}</td>
                             <td class="text-right font-bold">{{ $session->correct_count }} / {{ $session->responses_count }}</td>
+                            <td class="text-right"><a href="{{ route('admin.sessions.show', $session) }}" class="btn btn-secondary btn-sm" wire:navigate>Timeline</a></td>
                         </tr>
                     @endforeach
                     </tbody>

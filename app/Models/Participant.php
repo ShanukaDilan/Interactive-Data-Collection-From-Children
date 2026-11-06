@@ -77,4 +77,10 @@ class Participant extends Model
     {
         return $this->hasMany(QuizSession::class);
     }
+
+    /** @return HasMany<ReportLink, $this> */
+    public function reportLinks(): HasMany
+    {
+        return $this->hasMany(ReportLink::class);
+    }
 }

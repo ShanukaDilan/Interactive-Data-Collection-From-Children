@@ -25,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function (User $user, string $ability): ?bool {
             return $user->hasRole(Role::Admin->value) ? true : null;
         });
+
+        /** Question quality and anonymous peer comparisons are for researchers, not teachers/parents. */
+        Gate::define('view-research-analytics', fn (User $user): bool => $user->hasRole(Role::Researcher->value));
     }
 }

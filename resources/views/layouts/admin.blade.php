@@ -12,7 +12,7 @@
 <div x-data="{ sidebarOpen: false }" class="min-h-screen lg:flex">
 
     {{-- Mobile top bar --}}
-    <header class="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+    <header class="sticky top-0 z-30 flex print:hidden items-center justify-between border-b border-line bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
         <a href="{{ route('admin.dashboard') }}" class="font-display text-xl text-coral" wire:navigate>🌟 Learning Fun!</a>
         <button type="button" class="btn btn-secondary btn-sm" @click="sidebarOpen = true" aria-label="Open menu">☰</button>
     </header>
@@ -21,7 +21,7 @@
     <div x-cloak x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-ink/40 lg:hidden" @click="sidebarOpen = false"></div>
 
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-line bg-white transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0">
+           class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col print:hidden border-r border-line bg-white transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0">
         <div class="flex items-center justify-between px-5 py-5">
             <a href="{{ route('admin.dashboard') }}" class="font-display text-2xl text-coral" wire:navigate>🌟 Learning Fun!</a>
             <button type="button" class="text-muted lg:hidden" @click="sidebarOpen = false" aria-label="Close menu">✕</button>
@@ -29,7 +29,8 @@
 
         <nav class="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
             <a href="{{ route('play.show') }}" class="btn btn-primary mb-3 w-full py-3">▶ Start a quiz session</a>
-            <x-admin.nav-link route="admin.dashboard" icon="📊">Dashboard</x-admin.nav-link>
+            <x-admin.nav-link route="admin.dashboard" icon="🏠">Dashboard</x-admin.nav-link>
+            <x-admin.nav-link route="admin.analytics" :href="route('admin.analytics')" icon="📊">Analytics</x-admin.nav-link>
             <x-admin.nav-link route="admin.studies.*" :href="route('admin.studies.index')" icon="🧪">Studies</x-admin.nav-link>
             @can('viewAny', App\Models\Question::class)
                 <x-admin.nav-link route="admin.questions.*" :href="route('admin.questions.index')" icon="📝">Questions</x-admin.nav-link>
@@ -63,7 +64,7 @@
     </aside>
 
     {{-- Main --}}
-    <main class="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+    <main class="min-w-0 flex-1 print:p-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         {{ $slot }}
     </main>
 </div>

@@ -22,6 +22,15 @@ export class Outbox {
         this.csrfToken = csrfToken;
         this.onStatus = onStatus ?? (() => {});
         this.entries = storage.get(STORAGE_KEY, {}) ?? {};
+
+        // Sessions left from an earlier page load (tab closed or reloaded mid-quiz) cannot be
+        // resumed: keep their answers until synced, then let them be cleaned up.
+        for (const [uuid, entry] of Object.entries(this.entries)) {
+            entry.abandoned = true;
+            if (!this.needsSync(entry)) {
+                delete this.entries[uuid];
+            }
+        }
         this.flushing = false;
         this.flushAgain = false;
         this.retryIndex = 0;
@@ -35,7 +44,7 @@ export class Outbox {
             }
         });
 
-        this.emit();
+        this.persist();
     }
 
     startSession(meta) {

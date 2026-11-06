@@ -53,6 +53,33 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Analysis thresholds
+    |--------------------------------------------------------------------------
+    |
+    | Patterns are only reported when there is enough evidence, to avoid
+    | over-interpreting a handful of taps by a young child.
+    |
+    */
+
+    'analysis' => [
+        'min_answers_per_category' => 3,
+        'strength_delta' => 0.15,
+        'strength_min_rate' => 0.5,
+        'min_peer_children' => 5,
+        'position_bias_share' => 0.6,
+        'position_bias_min_choices' => 8,
+        'perseveration_streak' => 4,
+        'rapid_tap_ms' => 800,
+        'rapid_share' => 0.25,
+        'idle_ms' => 15000,
+        'fatigue_drop' => 0.2,
+        'min_group_size' => 3,
+        'item_too_easy' => 0.95,
+        'item_too_hard' => 0.25,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Uploads
     |--------------------------------------------------------------------------
     */

@@ -55,10 +55,20 @@ export function createSpeaker(locale = 'en-US') {
         window.speechSynthesis.speak(utt);
     }
 
-    function playQuestion(question, button) {
+    /**
+     * @param {(() => void)=} onEnd Called once when the prompt has finished (or could not play).
+     */
+    function playQuestion(question, button, onEnd) {
         stop();
         button?.classList.add('speaking');
-        const done = () => button?.classList.remove('speaking');
+        let finished = false;
+        const done = () => {
+            button?.classList.remove('speaking');
+            if (!finished) {
+                finished = true;
+                onEnd?.();
+            }
+        };
 
         if (question.audio) {
             const audio = new Audio(question.audio);
