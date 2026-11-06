@@ -20,6 +20,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Speech languages
+    |--------------------------------------------------------------------------
+    |
+    | BCP-47 codes passed to the browser's speech synthesis for each study.
+    |
+    */
+
+    'locales' => [
+        'en-US' => 'English (US)',
+        'en-GB' => 'English (UK)',
+        'si-LK' => 'Sinhala (Sri Lanka)',
+        'ta-LK' => 'Tamil (Sri Lanka)',
+        'ta-IN' => 'Tamil (India)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Question categories offered in the editor (free text is also allowed)
+    |--------------------------------------------------------------------------
+    */
+
+    'categories' => [
+        'Animals', 'Birds', 'Sea Creatures', 'Insects',
+        'Colors', 'Shapes', 'Numbers', 'Numbers - Counting', 'Letters', 'Letters - Capital Recognition',
+        'Phonics - Beginning Sound', 'Phonics - Find the Image', 'Opposites',
+        'Food', 'Fruits', 'Vegetables', 'Drinks',
+        'Vehicles', 'Nature', 'Weather',
+        'Body Parts', 'Clothes', 'Family', 'Feelings',
+        'Sports', 'Musical Instruments', 'Household', 'School', 'Objects - Identification',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Uploads
     |--------------------------------------------------------------------------
     */

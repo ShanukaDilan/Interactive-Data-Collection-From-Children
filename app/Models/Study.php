@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\QuizMode;
+use App\Models\Concerns\LogsChanges;
 use Database\Factories\StudyFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +20,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Study extends Model
 {
     /** @use HasFactory<StudyFactory> */
-    use HasFactory;
+    use HasFactory, LogsChanges;
+
+    /**
+     * Mirror the column defaults so new instances are complete before being reloaded.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'locale' => 'en-US',
+        'default_quiz_mode' => 'correct',
+        'age_min' => 4,
+        'age_max' => 6,
+        'shuffle_questions' => true,
+        'shuffle_options' => true,
+        'is_active' => true,
+    ];
 
     /**
      * @return array<string, string|class-string>

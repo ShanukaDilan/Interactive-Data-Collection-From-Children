@@ -3,7 +3,87 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* Learning Fun! palette — carried over from the original admin.php */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: var(--font-fredoka), var(--font-nunito), ui-rounded, system-ui, sans-serif;
+
+    --color-coral: #ff6b6b;
+    --color-coral-dark: #e85555;
+    --color-coral-soft: #fff5f5;
+    --color-sky: #4ecdc4;
+    --color-sky-dark: #36b5ac;
+    --color-sun: #ffe66d;
+    --color-mint: #a8e6cf;
+    --color-lav: #c9b1ff;
+    --color-peach: #ffb347;
+
+    --color-canvas: #f4f7fa;
+    --color-line: #e8ecf0;
+    --color-ink: #2d3748;
+    --color-muted: #718096;
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:cursor-not-allowed
+            disabled:opacity-60;
+    }
+    /* Variants are combined with .btn in markup: class="btn btn-primary" */
+    .btn-primary {
+        @apply bg-coral text-white shadow-sm hover:bg-coral-dark;
+    }
+    .btn-secondary {
+        @apply border border-line bg-white text-ink hover:bg-canvas;
+    }
+    .btn-danger {
+        @apply bg-white text-coral-dark ring-1 ring-coral/40 hover:bg-coral-soft;
+    }
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .field-label {
+        @apply mb-1.5 block text-sm font-bold text-ink;
+    }
+    .field-input {
+        @apply block w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70
+            focus:border-coral focus:ring-2 focus:ring-coral/20 focus:outline-none;
+    }
+    .field-error {
+        @apply mt-1 text-xs font-semibold text-coral-dark;
+    }
+    .field-help {
+        @apply mt-1 text-xs text-muted;
+    }
+
+    .card {
+        @apply rounded-2xl border border-line bg-white shadow-[0_4px_16px_rgba(0,0,0,0.04)];
+    }
+
+    .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold;
+    }
+
+    .data-table {
+        @apply w-full text-left text-sm;
+    }
+    .data-table thead th {
+        @apply border-b border-line bg-canvas/60 px-4 py-3 text-xs font-extrabold tracking-wide text-muted uppercase;
+    }
+    .data-table tbody td {
+        @apply border-b border-line px-4 py-3 align-middle;
+    }
+    .data-table tbody tr:last-child td {
+        @apply border-b-0;
+    }
+    .data-table tbody tr:hover {
+        @apply bg-canvas/50;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
 }

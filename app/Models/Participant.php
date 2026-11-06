@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsChanges;
 use Database\Factories\ParticipantFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -20,7 +21,10 @@ use Illuminate\Support\Str;
 class Participant extends Model
 {
     /** @use HasFactory<ParticipantFactory> */
-    use HasFactory;
+    use HasFactory, LogsChanges;
+
+    /** @var list<string> Never write the child's name into the audit log. */
+    protected array $auditExcept = ['display_name'];
 
     /**
      * @return array<string, string>

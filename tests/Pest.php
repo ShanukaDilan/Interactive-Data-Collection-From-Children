@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role as RoleModel;
 use Tests\TestCase;
 
 /*
@@ -44,7 +47,16 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Create a user with the given role (roles are created on demand).
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function userWithRole(Role $role, array $attributes = []): User
 {
-    // ..
+    foreach (Role::cases() as $case) {
+        RoleModel::findOrCreate($case->value, 'web');
+    }
+
+    return tap(User::factory()->create($attributes))->assignRole($role->value);
 }
