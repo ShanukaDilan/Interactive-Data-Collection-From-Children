@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SyncQuizDataRequest;
-use App\Models\Participant;
 use App\Models\Study;
+use App\Services\PlayConfigBuilder;
 use App\Services\QuizSyncService;
 use App\Services\StudyBundleBuilder;
 use Illuminate\Http\JsonResponse;
@@ -17,37 +17,9 @@ use Illuminate\View\View;
  */
 class PlayController extends Controller
 {
-    public function show(Request $request): View
+    public function show(Request $request, PlayConfigBuilder $config): View
     {
-        $studies = $request->user()->accessibleStudies()
-            ->where('is_active', true)
-            ->withCount(['questions' => fn ($query) => $query->where('is_archived', false)])
-            ->with(['participants' => fn ($query) => $query->orderBy('code')])
-            ->orderBy('name')
-            ->get()
-            ->map(fn (Study $study) => [
-                'id' => $study->id,
-                'name' => $study->name,
-                'age_min' => $study->age_min,
-                'age_max' => $study->age_max,
-                'default_quiz_mode' => $study->default_quiz_mode->value,
-                'question_count' => $study->questions_count,
-                'bundle_url' => route('play.bundle', $study),
-                'participants' => $study->participants->map(fn (Participant $participant) => [
-                    'id' => $participant->id,
-                    'code' => $participant->code,
-                    'age' => $participant->age,
-                    'name' => $participant->display_name,
-                ])->values(),
-            ])
-            ->values();
-
-        return view('play.index', [
-            'config' => [
-                'studies' => $studies,
-                'syncUrl' => route('play.sync'),
-            ],
-        ]);
+        return view('play.index', ['config' => $config->forPage($request->user())]);
     }
 
     public function bundle(Study $study, StudyBundleBuilder $builder): JsonResponse

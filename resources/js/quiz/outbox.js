@@ -15,11 +15,11 @@ const RETRY_DELAYS_MS = [3000, 10000, 30000, 60000];
  */
 export class Outbox {
     /**
-     * @param {{ syncUrl: string, csrfToken: () => string|null, onStatus?: (status: {state: string, pending: number}) => void }} options
+     * @param {{ endpoint: () => {url: string, headers: Record<string, string>}, onStatus?: (status: {state: string, pending: number}) => void }} options
+     *   `endpoint` is asked on every sync, so a device registered mid-session switches to its token at once.
      */
-    constructor({ syncUrl, csrfToken, onStatus }) {
-        this.syncUrl = syncUrl;
-        this.csrfToken = csrfToken;
+    constructor({ endpoint, onStatus }) {
+        this.endpoint = endpoint;
         this.onStatus = onStatus ?? (() => {});
         this.entries = storage.get(STORAGE_KEY, {}) ?? {};
 
@@ -134,13 +134,14 @@ export class Outbox {
         };
 
         try {
-            const response = await fetch(this.syncUrl, {
+            const { url, headers } = this.endpoint();
+            const response = await fetch(url, {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    'X-CSRF-TOKEN': this.csrfToken() ?? '',
+                    ...headers,
                 },
                 body: JSON.stringify(payload),
             });
@@ -210,14 +211,18 @@ export class Outbox {
     }
 
     persist() {
-        storage.set(STORAGE_KEY, this.entries);
+        // If the device's storage is full, answers stay in memory (and still sync while the
+        // page is open), but would be lost on reload — so tell the adult.
+        this.storageFull = !storage.set(STORAGE_KEY, this.entries);
         this.emit();
     }
 
     emit() {
         const pending = this.pendingCount();
         let state = pending > 0 ? 'pending' : 'synced';
-        if (this.lastError === 'offline') {
+        if (this.storageFull && pending > 0) {
+            state = 'storage_full';
+        } else if (this.lastError === 'offline') {
             state = 'offline';
         } else if (this.lastError === 'auth') {
             state = 'auth';

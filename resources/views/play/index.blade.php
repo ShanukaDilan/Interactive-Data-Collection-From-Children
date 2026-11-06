@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#FF6B6B">
+    <link rel="manifest" href="{{ route('web-manifest') }}">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>🌟 Learning Fun!</title>
     @fonts
     @vite(['resources/css/quiz.css', 'resources/js/quiz/main.js'])
@@ -63,6 +68,10 @@
         <div class="setup-footer">
             <span class="sync-status" id="syncStatus"><span class="sync-dot"></span><span id="syncText">All answers saved</span></span>
             <a href="{{ route('admin.dashboard') }}">Dashboard →</a>
+        </div>
+        <div class="device-status">
+            <span id="deviceText"></span>
+            <button type="button" class="device-btn" id="deviceBtn" hidden>Set up for offline use</button>
         </div>
     </div>
 </div>

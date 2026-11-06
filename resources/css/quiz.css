@@ -687,3 +687,16 @@ button.option-card { font: inherit; color: inherit; width: 100%; }
   .question-emoji-display.qemoji-count { max-width: 150px; }
   .question-emoji-display.qemoji-many { font-size: 1.25rem; }
 }
+
+/* Offline / device status (adult-facing, under the setup card footer) */
+.device-status {
+  margin-top: 10px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: .78rem; font-weight: 700; color: #aaa; text-align: left;
+}
+.device-btn {
+  border: 2px solid #eee; background: white; color: #2bbcb3;
+  border-radius: 99px; padding: 5px 12px;
+  font: inherit; font-weight: 800; cursor: pointer;
+}
+.device-btn:disabled { opacity: .5; }

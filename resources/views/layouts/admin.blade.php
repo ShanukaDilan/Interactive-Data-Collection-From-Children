@@ -36,6 +36,7 @@
                 <x-admin.nav-link route="admin.questions.*" :href="route('admin.questions.index')" icon="📝">Questions</x-admin.nav-link>
             @endcan
             <x-admin.nav-link route="admin.participants.*" :href="route('admin.participants.index')" icon="🧒">Participants</x-admin.nav-link>
+            <x-admin.nav-link route="admin.devices.*" :href="route('admin.devices.index')" icon="📱">Devices</x-admin.nav-link>
 
             @can('viewAny', App\Models\User::class)
                 <p class="px-3 pt-5 pb-1 text-xs font-extrabold tracking-wide text-muted uppercase">Administration</p>

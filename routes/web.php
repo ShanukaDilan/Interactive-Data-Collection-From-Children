@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DeviceRegistrationController;
 use App\Http\Controllers\ParentReportController;
 use App\Http\Controllers\PlayController;
+use App\Http\Controllers\ServiceWorkerController;
 use App\Livewire\Admin\Account\ChangePassword;
 use App\Livewire\Admin\Analytics\ParticipantReport;
 use App\Livewire\Admin\Analytics\SessionDetail;
 use App\Livewire\Admin\Analytics\StudyAnalytics;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\Devices\DeviceIndex;
 use App\Livewire\Admin\Participants\ParticipantIndex;
 use App\Livewire\Admin\Questions\QuestionForm;
 use App\Livewire\Admin\Questions\QuestionIndex;
@@ -38,7 +41,11 @@ Route::middleware('auth')->prefix('play')->name('play.')->group(function (): voi
     Route::get('/', [PlayController::class, 'show'])->name('show');
     Route::get('/studies/{study}/bundle', [PlayController::class, 'bundle'])->name('bundle');
     Route::post('/sync', [PlayController::class, 'sync'])->middleware('throttle:120,1')->name('sync');
+    Route::post('/devices', [DeviceRegistrationController::class, 'store'])->middleware('throttle:10,1')->name('devices.store');
 });
+
+Route::get('/sw.js', [ServiceWorkerController::class, 'worker'])->name('service-worker');
+Route::get('/manifest.webmanifest', [ServiceWorkerController::class, 'manifest'])->name('web-manifest');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): void {
     Route::get('/', Dashboard::class)->name('dashboard');
@@ -60,6 +67,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
     Route::get('/users', UserIndex::class)->name('users.index')->can('viewAny', User::class);
     Route::get('/users/create', UserForm::class)->name('users.create')->can('create', User::class);
     Route::get('/users/{user}/edit', UserForm::class)->name('users.edit')->can('update', 'user');
+
+    Route::get('/devices', DeviceIndex::class)->name('devices.index');
 
     Route::get('/account/password', ChangePassword::class)->name('account.password');
 });
