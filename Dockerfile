@@ -12,10 +12,16 @@ COPY . .
 RUN composer dump-autoload --no-dev --optimize --classmap-authoritative --no-scripts
 
 # ── 2. Front-end assets (Vite) ──────────────────────────────────────
-FROM node:22-alpine AS assets
+FROM node:22-bookworm-slim AS assets
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+COPY package.json package-lock.json .npmrc ./
+# Same npm major as the one that wrote package-lock.json. If `npm ci` still rejects the lockfile,
+# print npm's own error (build logs otherwise hide it) and fall back to `npm install`.
+RUN npm install -g npm@11.6.2 --no-audit --no-fund \
+    && (npm ci --no-audit --no-fund \
+        || (echo "npm ci failed — npm log follows, then falling back to npm install" \
+            && tail -n 40 /root/.npm/_logs/*-debug-0.log; \
+            npm install --no-audit --no-fund))
 COPY vite.config.js ./
 COPY resources ./resources
 # Tailwind scans Laravel's pagination views inside vendor/.
