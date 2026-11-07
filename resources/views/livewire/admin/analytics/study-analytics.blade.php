@@ -4,7 +4,34 @@
 @endphp
 
 <div>
-    <x-admin.page-header title="Analytics" subtitle="How children are answering: accuracy, speed, and behaviour patterns." />
+    <x-admin.page-header title="Analytics" subtitle="How children are answering: accuracy, speed, and behaviour patterns.">
+        @if ($canExport)
+            <x-slot:actions>
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape="open = false">
+                    <button type="button" class="btn btn-secondary" @click="open = !open" :aria-expanded="open" aria-haspopup="true">
+                        ⬇️ Export data
+                    </button>
+                    <div x-show="open" x-cloak x-transition.origin.top.right
+                         class="absolute right-0 z-20 mt-2 w-80 rounded-2xl border border-line bg-white p-2 shadow-xl">
+                        <p class="px-3 pb-2 pt-1 text-xs text-muted">Uses the filters below. Children appear only by code.</p>
+                        @foreach ([
+                            ['workbook.xlsx', '📗 Excel workbook', 'Answers, every tap, codebook and filter notes in one file'],
+                            ['responses.csv', '📄 Answers (CSV)', 'One row per answer — for R, SPSS, Python'],
+                            ['taps.csv', '👆 Taps (CSV)', 'One row per tap, including wrong tries'],
+                            ['codebook.csv', '📘 Codebook (CSV)', 'What every column means'],
+                            ['legacy.csv', '🗂️ Original app format (CSV)', 'Same 13 columns as the old download'],
+                        ] as [$file, $label, $hint])
+                            <a href="{{ route('admin.export', ['file' => $file, ...$exportQuery]) }}" @click="open = false"
+                               class="block rounded-xl px-3 py-2 hover:bg-sun/15 focus:bg-sun/15 focus:outline-none">
+                                <span class="block text-sm font-bold text-ink">{{ $label }}</span>
+                                <span class="block text-xs text-muted">{{ $hint }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </x-slot:actions>
+        @endif
+    </x-admin.page-header>
 
     {{-- Filters --}}
     <div class="card mb-6 grid grid-cols-2 gap-3 p-4 md:grid-cols-3 xl:grid-cols-7">

@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
 
         /** Question quality and anonymous peer comparisons are for researchers, not teachers/parents. */
         Gate::define('view-research-analytics', fn (User $user): bool => $user->hasRole(Role::Researcher->value));
+
+        /** Raw data downloads (CSV/Excel) are for researchers; teachers use the on-screen analytics. */
+        Gate::define('export-responses', fn (User $user): bool => $user->hasRole(Role::Researcher->value));
     }
 }

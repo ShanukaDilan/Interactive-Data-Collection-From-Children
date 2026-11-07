@@ -21,6 +21,11 @@ Complete rebuild on Laravel 13. The original PHP app is kept in `legacy/` for re
 - **Child report** (strengths vs own average; anonymous same-age average for researchers), session timeline, printable
 - **Parent share links**: private, expiring, revocable; only a hash is stored
 - **Offline classroom devices**: installable web app; registered tablets run quizzes with no connection and sync later with their own token
+- **Data exports** (researchers and admins), using the analytics filters:
+  - an Excel workbook (answers, taps, codebook, filter notes)
+  - answers CSV (one row per answer), taps CSV (one row per tap) and a codebook CSV
+  - the original app's 13-column CSV
+  - names are never exported, spreadsheet formulas are neutralised, and every export is audited
 - **Import** of questions and answers from the original app (`php artisan quiz:import-legacy`)
 - **Railway deployment** (Dockerfile, FrankenPHP, health check)
 
@@ -28,9 +33,6 @@ Complete rebuild on Laravel 13. The original PHP app is kept in `legacy/` for re
 - Answers are stored relationally (sessions → responses → taps) instead of JSONL/flat tables
 - Text is stored as entered and escaped on output (fixes double-encoded `&amp;` in the old CSV)
 - Answer submission requires sign-in or a registered device (previously open to anyone)
-
-### Not yet ported
-- CSV download of responses (the old admin's export) — planned as Phase 5 (CSV, Excel, long-format and codebook)
 
 ---
 

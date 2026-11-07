@@ -77,6 +77,8 @@ class StudyAnalytics extends Component
             'children' => $this->childRows($answers),
             'items' => $showResearch ? (new ItemAnalyzer)->analyze($answers) : [],
             'showResearch' => $showResearch,
+            'canExport' => Gate::allows('export-responses'),
+            'exportQuery' => array_filter($this->only(['study', 'from', 'to', 'age', 'mode', 'category']), 'filled'),
             'mixedModes' => $answers->pluck('mode')->unique()->count() > 1,
         ]);
     }

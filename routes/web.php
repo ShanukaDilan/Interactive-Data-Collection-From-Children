@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DeviceRegistrationController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ParentReportController;
 use App\Http\Controllers\PlayController;
 use App\Http\Controllers\ServiceWorkerController;
@@ -63,6 +64,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
 
     Route::get('/analytics', StudyAnalytics::class)->name('analytics');
     Route::get('/sessions/{session:uuid}', SessionDetail::class)->name('sessions.show');
+    Route::get('/export/{file}', ExportController::class)
+        ->whereIn('file', ExportController::FILES)
+        ->middleware('throttle:20,1')
+        ->name('export');
 
     Route::get('/users', UserIndex::class)->name('users.index')->can('viewAny', User::class);
     Route::get('/users/create', UserForm::class)->name('users.create')->can('create', User::class);

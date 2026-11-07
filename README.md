@@ -53,6 +53,23 @@ Open the quiz on the tablet once while online and tap **Set up for offline use**
 
 All insights are presented as *indicators from a short game, not a diagnosis.*
 
+### Downloading the data (researchers and admins)
+On **Analytics**, set the filters, then choose **⬇️ Export data**. The download contains exactly the answers the page is showing.
+
+| File | Contents |
+|---|---|
+| **Excel workbook** (`.xlsx`) | Sheets *Responses*, *Taps*, *Codebook* and *About* (who exported it, when, with which filters) |
+| **Answers** (`responses.csv`) | One row per answer: accuracy, first-try accuracy, attempts, times, replays, card order and chosen position |
+| **Taps** (`taps.csv`) | One row per tap, including wrong tries. Joins to answers on `response_id` |
+| **Codebook** (`codebook.csv`) | Type and meaning of every column in both files |
+| **Original app format** (`legacy.csv`) | The 13 columns of the old app's download, for existing spreadsheets |
+
+Notes for analysis:
+- Use `first_try_correct` as the accuracy measure. In *Find the Answer* mode `is_correct` is always 1.
+- Positions start at 1.
+- CSV files are UTF-8 with a BOM, so Excel shows Sinhala and Tamil correctly.
+- Children appear only by their pseudonymous code; names are never exported. Every export is recorded in the audit log.
+
 ---
 
 ## Local development

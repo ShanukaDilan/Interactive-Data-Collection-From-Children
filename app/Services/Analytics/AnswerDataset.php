@@ -8,7 +8,6 @@ use App\Models\QuizTap;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Loads answers (joined with their session and question media flags, plus taps) into
@@ -36,21 +35,7 @@ final class AnswerDataset
      */
     public static function forStudies(Collection|array $studyIds, AnalyticsFilters $filters): self
     {
-        $rows = DB::table('quiz_responses as r')
-            ->join('quiz_sessions as s', 's.id', '=', 'r.quiz_session_id')
-            ->whereIn('s.study_id', $studyIds)
-            ->when($filters->studyId, fn ($q, $id) => $q->where('s.study_id', $id))
-            ->when($filters->participantId, fn ($q, $id) => $q->where('s.participant_id', $id))
-            ->when($filters->sessionUuid, fn ($q, $uuid) => $q->where('s.uuid', $uuid))
-            ->when($filters->age, fn ($q, $age) => $q->where('s.child_age', $age))
-            ->when($filters->mode, fn ($q, $mode) => $q->where('s.quiz_mode', $mode))
-            ->when($filters->category, fn ($q, $category) => $q->where('r.category', $category))
-            ->when($filters->from, fn ($q, $from) => $q->where('r.answered_at', '>=', $from))
-            ->when($filters->to, fn ($q, $to) => $q->where('r.answered_at', '<=', $to))
-            ->orderBy('s.started_at')
-            ->orderBy('s.id')
-            ->orderBy('r.position')
-            ->orderBy('r.id')
+        $rows = ResponseQuery::ordered(ResponseQuery::make($studyIds, $filters))
             ->limit(self::MAX_ANSWERS + 1)
             ->get([
                 'r.*',
