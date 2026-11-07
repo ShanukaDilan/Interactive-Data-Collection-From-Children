@@ -2,206 +2,151 @@
 
 # 🌟 Learning Fun! — Child Quiz Data Collection System
 
-## What It Does
-Interactive touch-screen quiz for children aged 4–6.
-Questions are spoken aloud; children answer by tapping large emoji or image cards.
-All responses are saved and downloadable as a CSV for analysis.
-Fully responsive — works on phones, tablets, and desktops.
+## What it does
+An interactive touch-screen quiz for children aged 4–6, built for early-childhood research and classroom assessment.
+Questions are spoken aloud; children answer by tapping large emoji or picture cards, or by counting on a number keypad.
+Every tap is recorded, so researchers and teachers can see not only *whether* a child answered correctly, but *how*: speed, hesitation, replaying the question, and choice patterns.
+
+Works on phones, tablets and desktops, and **offline on registered classroom tablets**.
+
+> Version 1.0 is a rebuild on Laravel. The original PHP version is kept in [`legacy/`](legacy/) for reference.
 
 ---
 
-## Files Overview
+## Who uses what
 
-| File | Purpose |
+| Role | Can |
 |---|---|
-| `index.php` | **Child-facing quiz** — touch-friendly, audio questions, animated answers |
-| `submit.php` | **API endpoint** — receives and stores each answer as JSON |
-| `admin.php` | **Admin dashboard** — view stats, manage questions, download CSV |
-| `questions_api.php` | **Questions CRUD API** — save / delete questions with media uploads |
-| `data/responses.jsonl` | **Response store** — auto-created on first submission |
-| `data/questions.json` | **Question store** — created when first custom question is saved |
-| `uploads/` | **Media store** — question and option images / audio files |
+| **Admin** | Everything: users, all studies, all data |
+| **Researcher** | Create and run studies, manage the question bank, see analytics including question quality and anonymous age-group comparisons |
+| **Teacher** | Run quiz sessions and add children in the studies they are assigned to; see analytics and child reports (child compared with themselves) |
+| **Parent** | Opens a private, expiring link a teacher shares — a simple report of their own child only (no account) |
 
 ---
 
-## Requirements
-- PHP 7.4+ (with `json`, `session`, `fileinfo` extensions — standard)
-- A web server (Apache / Nginx / XAMPP / MAMP)
-- Modern browser with Web Speech API (Chrome recommended for best TTS)
-- Works on any screen size — phones, tablets, and desktops
+## Running a session
+
+1. Sign in and press **▶ Start a quiz session** (or open `/play`).
+2. Pick the study, the child's age, the child (or *Anonymous*) and the mode:
+   - **Find the Answer** — wrong taps shake and the child tries again; records how many taps it took.
+   - **Free Choice** — any tap is recorded and the quiz moves on, with no right/wrong feedback.
+3. Tap **Let's Play!** and hand the device to the child. The small ✕ lets an adult end the session early.
+
+The status line under the setup card shows whether all answers are saved.
+
+### Offline tablets
+Open the quiz on the tablet once while online and tap **Set up for offline use**. The tablet downloads the quiz, all its studies' questions, pictures and sounds. From then on it works without internet; answers are kept on the tablet and sync automatically when it is back online — even if the teacher's sign-in has expired. Manage or revoke tablets under **Devices**.
+
+> Offline mode needs HTTPS (it works on Railway, or on `localhost` during development).
 
 ---
 
-## Setup (3 Steps)
+## What the analytics show
 
-### 1. Upload to your server
-Place all files inside a folder on your web server. Example:
-```
-/var/www/html/child-quiz/
-```
+- **Right first try** — in *Find the Answer* children always reach the right card eventually, so the meaningful score is being right on the *first* tap.
+- **Time to first tap** and **reaction time after the question ends** — medians, because a few long pauses would distort an average.
+- Breakdowns by **category**, **age** and **question position** (tiredness towards the end).
+- **Behaviour patterns**, only reported with enough evidence: position bias, repeating choices, same wrong answer after feedback, fast tapping, common mix-ups (e.g. b/d), off-by-one counting slips, whether replaying the question helps, answering before the question ends, recorded voice vs computer voice, photos vs emoji, tiring or warming up, long pauses, favourite picks in Free Choice.
+- **Child report** — strengths and areas to practise compared with the child's own average, progress over sessions, printable.
+- **Session timeline** — every tap of a session in order with timing and screen position.
+- **Question quality** (researchers) — difficulty, discrimination, and which wrong answers attract children.
 
-### 2. Set permissions
-The `data/` and `uploads/` directories need write permissions:
+All insights are presented as *indicators from a short game, not a diagnosis.*
+
+### Downloading the data (researchers and admins)
+On **Analytics**, set the filters, then choose **⬇️ Export data**. The download contains exactly the answers the page is showing.
+
+| File | Contents |
+|---|---|
+| **Excel workbook** (`.xlsx`) | Sheets *Responses*, *Taps*, *Codebook* and *About* (who exported it, when, with which filters) |
+| **Answers** (`responses.csv`) | One row per answer: accuracy, first-try accuracy, attempts, times, replays, card order and chosen position |
+| **Taps** (`taps.csv`) | One row per tap, including wrong tries. Joins to answers on `response_id` |
+| **Codebook** (`codebook.csv`) | Type and meaning of every column in both files |
+| **Original app format** (`legacy.csv`) | The 13 columns of the old app's download, for existing spreadsheets |
+
+Notes for analysis:
+- Use `first_try_correct` as the accuracy measure. In *Find the Answer* mode `is_correct` is always 1.
+- Positions start at 1.
+- CSV files are UTF-8 with a BOM, so Excel shows Sinhala and Tamil correctly.
+- Children appear only by their pseudonymous code; names are never exported. Every export is recorded in the audit log.
+
+---
+
+## Local development
+
+Requirements: PHP 8.3+ (extensions: pdo_sqlite or pdo_mysql, intl, mbstring, fileinfo, gd, zip), Composer 2, Node 22.
+
 ```bash
-mkdir -p data uploads
-chmod 755 data uploads
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed      # roles, admin from ADMIN_* in .env, default study with 20 questions
+php artisan storage:link
+npm install && npm run build    # or `composer run dev` while developing
+php artisan serve
 ```
 
-### 3. Change the admin password
-Open `admin.php` and change line 7:
-```php
-define('ADMIN_PASSWORD', 'admin123');   // ← change this!
-```
+Sign in at <http://localhost:8000/login> with `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` (default `admin@example.com` / `change-me-now` — change it).
 
----
+Run the tests:
 
-## Usage
-
-### Running a Session (Teacher/Parent)
-1. Open `index.php` on any device (phone, tablet, desktop)
-2. Select the child's age (4, 5, or 6)
-3. Optionally enter a child ID or name
-4. Choose a quiz mode:
-   - **Find the Answer** — child must tap the correct option; wrong taps shake and retry
-   - **Free Choice** — any tap is recorded without right/wrong feedback (for open-ended research)
-5. Tap **"Let's Play!"** and hand the device to the child
-
-### During the Quiz (Child)
-- The question is **spoken aloud** automatically
-- The child taps the **correct picture**
-- Correct answer → 🎉 celebration + confetti
-- Wrong answer → gentle shake, try again
-- 10 questions total, randomly ordered
-
-### Viewing Data (Admin)
-1. Open `admin.php`
-2. Login with the password you set
-3. View:
-   - Summary stats (sessions, accuracy, avg response time)
-   - Breakdown by **category** and **age**
-   - Full response table with filters (category, age)
-4. Click **"Download All Data as CSV"** to export
-
-### Managing Questions (Admin)
-1. Open `admin.php` → **Questions** tab
-2. Click **+ New** to create a question, or click any question to edit it
-3. Fill in:
-   - **Category** — choose from 24 built-in categories or type a custom one
-   - **Audio / TTS text** — what gets spoken aloud (e.g. "Touch the cat!")
-   - **Display hint** — text shown on the question card (e.g. "Cat")
-   - **Optional media** — upload an image or audio file for the question
-4. Set up 4 answer options — each with a label, emoji, background colour, and optional image
-5. Mark the correct answer with the radio button
-6. Click **Save Question** — custom questions replace the built-in set immediately
-
----
-
-## Quiz Modes
-
-| Mode | Child Sees | Recorded |
-|---|---|---|
-| **Find the Answer** | ✅/❌ feedback, must get it right to advance | First correct tap + attempt count |
-| **Free Choice** | No feedback, advances on any tap | Whatever the child tapped |
-
----
-
-## CSV Columns Explained
-
-| Column | Description |
-|---|---|
-| Session ID | Unique ID per quiz run |
-| Child ID | Optional name/ID entered at setup |
-| Child Age | 4, 5, or 6 |
-| Quiz Mode | `correct` (Find the Answer) or `free` (Free Choice) |
-| Question ID | e.g. `q01`, `q05` |
-| Question Text | The spoken prompt |
-| Category | e.g. Animals, Colors, Shapes |
-| Correct Answer | The right answer label |
-| Selected Answer | What the child tapped |
-| Is Correct | Yes / No |
-| Attempts | Taps before the correct answer (Find the Answer mode) |
-| Response Time (ms) | Milliseconds from question load to final tap |
-| Timestamp | Server time of submission |
-
----
-
-## Question Categories (24 Built-in)
-
-| Group | Categories |
-|---|---|
-| **Living Things** | Animals, Birds, Sea Creatures, Insects |
-| **Concepts** | Colors, Shapes, Numbers, Letters, Opposites |
-| **Food & Drink** | Food, Fruits, Vegetables, Drinks |
-| **World** | Vehicles, Nature, Weather |
-| **People** | Body Parts, Clothes, Family, Feelings |
-| **Activities** | Sports, Musical Instruments |
-| **Environment** | Household, School |
-
-> Custom categories can also be typed freely in the question editor.
-> Questions are shuffled each session so answer positions vary.
-
----
-
-## Responsive Design
-
-| Device | Layout |
-|---|---|
-| Phone (portrait) | Compact quiz cards, safe-area insets for notched screens |
-| Phone (landscape) | Options switch to row layout to fit the short viewport |
-| Tablet | Standard layout with comfortable touch targets |
-| Desktop | Full layout |
-
----
-
-## Customisation Tips
-
-### Adding Questions via the Admin Panel
-Use the **Questions** tab in `admin.php` — no code editing needed.
-Upload images or audio files, choose a category, and save.
-
-### Adding Questions via Code
-Add entries to the built-in fallback array in `index.php`:
-```javascript
-{
-  id:'q11', category:'Animals', speak:'Touch the lion!', hint:'Lion',
-  options:[
-    {emoji:'🦁', label:'Lion',   correct:true,  bg:'#FFF8E0'},
-    {emoji:'🐯', label:'Tiger',  correct:false, bg:'#FFF4E0'},
-    {emoji:'🦊', label:'Fox',    correct:false, bg:'#FFF2EC'},
-    {emoji:'🐻', label:'Bear',   correct:false, bg:'#FFF4EC'},
-  ]
-},
-```
-> Note: questions saved via the admin panel (in `data/questions.json`) take priority over the built-in fallback.
-
-### Changing the Language
-Find `utt.lang = 'en-US'` in `index.php` and update the language code (e.g. `si-LK` for Sinhala, `ta-IN` for Tamil).
-Also update the `speak` text on each question to match.
-
-### Protecting the Data Folder
-Add this to an `.htaccess` file inside the `data/` and `uploads/` folders:
-```
-Deny from all
+```bash
+php artisan test
 ```
 
 ---
 
-## Security Notes
-- Change the admin password from the default `admin123`
-- The `data/` and `uploads/` directories should not be publicly accessible (see above)
-- No database required — data is stored in plain JSONL / JSON files
-- Input is sanitised with `htmlspecialchars` before output
-- The questions API (`questions_api.php`) requires an active admin session
+## Deploying to Railway
+
+The repository includes a `Dockerfile` (PHP 8.3 + FrankenPHP) and `railway.json` (health check on `/up`).
+
+1. Create a Railway project with this repository and add the **MySQL** plugin.
+2. Add a **volume** to the app service mounted at `/app/storage/app/public` (uploaded pictures and audio).
+3. Set the service variables:
+
+   | Variable | Value |
+   |---|---|
+   | `APP_KEY` | output of `php artisan key:generate --show` |
+   | `APP_URL` | `https://<your-app>.up.railway.app` |
+   | `APP_NAME` | `Learning Fun!` |
+   | `DB_CONNECTION` | `mysql` |
+   | `DB_URL` | `${{MySQL.MYSQL_URL}}` |
+   | `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME` | first admin account |
+   | `SEED_ON_DEPLOY` | `true` for the first deploy (creates roles, admin and default study) |
+
+4. Deploy. Migrations run automatically on every start (`RUN_MIGRATIONS=false` to disable).
+5. Sign in, **change the admin password**, then set `SEED_ON_DEPLOY=false` (re-seeding is harmless — it never overwrites edited questions — but no longer needed).
 
 ---
 
-## Browser Compatibility
+## Importing data from the original app
 
-| Browser | Audio | Recommended |
-|---|---|---|
-| Chrome / Edge | ✅ Full Web Speech API | ✅ Best |
-| Firefox | ✅ Works | ✅ Good |
-| Safari (iOS) | ✅ Works (tap needed first) | ✅ Good |
-| Samsung Internet | ✅ Works | ✅ Good |
+```bash
+# Questions + answers from the old files
+php artisan quiz:import-legacy \
+    --questions=legacy/data/questions.json \
+    --jsonl=/path/to/old/data/responses.jsonl
 
-> **iOS note:** Audio requires at least one user interaction before it plays. The "Let's Play!" button satisfies this requirement.
+# …or answers straight from the old app's Railway database
+LEGACY_DB_URL="mysql://user:pass@host:3306/railway" php artisan quiz:import-legacy --from-db
+```
+
+Options: `--study=<slug>` (default `legacy-import`, created as an inactive study), `--participants` (turn old child IDs into pseudonymous participants; names are stored encrypted), `--dry-run` (show counts, save nothing).
+Re-running is safe — existing sessions and answers are skipped. Text the old app HTML-escaped is decoded.
+
+---
+
+## Privacy & security
+- Children are identified by pseudonymous codes; optional names are encrypted at rest and kept out of the audit log.
+- Passwords are hashed; sign-in is rate-limited; every change to studies, questions and participants is audited.
+- Quiz answers can only be submitted by signed-in staff or registered devices.
+- Parent links store only a hash of the token, expire, and can be revoked.
+- Set a data-retention period per study for ethics compliance.
+
+---
+
+## Citation
+If you use this software in research, please cite it using [`CITATION.cff`](CITATION.cff).
+
+## License
+[MIT](LICENSE)
