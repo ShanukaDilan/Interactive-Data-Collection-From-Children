@@ -57,6 +57,16 @@ it('can be re-run without duplicating questions or study links', function () {
         ->and(Question::where('legacy_id', 'q01')->first()->options)->toHaveCount(3);
 });
 
+it('does not overwrite edited questions when seeding again', function () {
+    $this->seed();
+    Question::where('legacy_id', 'q01')->update(['speak_text' => 'Edited in the admin']);
+
+    $this->seed();
+
+    expect(Question::where('legacy_id', 'q01')->value('speak_text'))->toBe('Edited in the admin')
+        ->and(Question::count())->toBe(20);
+});
+
 it('seeds an admin user and the default study', function () {
     $this->seed();
 

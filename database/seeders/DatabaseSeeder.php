@@ -47,6 +47,9 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        $importer->importFile(database_path('seeders/data/questions.json'), $study);
+        // Only fill an empty default study, so re-seeding never overwrites questions edited in the admin.
+        if ($study->questions()->doesntExist()) {
+            $importer->importFile(database_path('seeders/data/questions.json'), $study);
+        }
     }
 }

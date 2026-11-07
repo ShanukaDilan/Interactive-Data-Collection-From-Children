@@ -64,6 +64,19 @@ return [
             ]) : [],
         ],
 
+        /*
+        | The original PHP app's database (read-only, used by `php artisan quiz:import-legacy --from-db`).
+        | Set LEGACY_DB_URL, e.g. mysql://user:pass@host:3306/railway or postgres://… — the driver
+        | is taken from the URL scheme.
+        */
+        'legacy' => [
+            'driver' => env('LEGACY_DB_DRIVER', 'mysql'),
+            'url' => env('LEGACY_DB_URL'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

@@ -22,6 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
 
+        // Railway (and most PaaS hosts) terminate HTTPS at a proxy; trust its X-Forwarded-* headers
+        // so URLs, secure cookies and the offline service worker see the real https origin.
+        $middleware->trustProxies(at: env('TRUSTED_PROXIES', '*'));
+
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
     })
