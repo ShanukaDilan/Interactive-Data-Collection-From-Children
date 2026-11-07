@@ -2,6 +2,8 @@
  * Speech: uploaded question audio when present, otherwise the browser's text-to-speech
  * in the study's language. Ported from useTTS / playQuestion in legacy/index.php.
  */
+import { getPrefs, isCalm } from './prefs.js';
+
 export function createSpeaker(locale = 'en-US') {
     let currentAudio = null;
 
@@ -32,6 +34,7 @@ export function createSpeaker(locale = 'en-US') {
         const utt = new SpeechSynthesisUtterance(text);
         utt.rate = 0.85;
         utt.pitch = 1.2;
+        utt.volume = getPrefs().volume;
         utt.lang = locale;
         const voice = voiceFor(locale);
         if (voice) {
@@ -50,7 +53,8 @@ export function createSpeaker(locale = 'en-US') {
         window.speechSynthesis.cancel();
         const utt = new SpeechSynthesisUtterance(text);
         utt.rate = 0.9;
-        utt.pitch = 1.2;
+        utt.pitch = isCalm() ? 1.05 : 1.2;
+        utt.volume = getPrefs().volume * (isCalm() ? 0.6 : 1);
         utt.lang = 'en-US';
         window.speechSynthesis.speak(utt);
     }
@@ -73,6 +77,7 @@ export function createSpeaker(locale = 'en-US') {
         if (question.audio) {
             const audio = new Audio(question.audio);
             currentAudio = audio;
+            audio.volume = getPrefs().volume;
             audio.onended = done;
             let fellBack = false;
             const fallback = () => {

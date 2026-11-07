@@ -1,4 +1,5 @@
-/** Visual effects ported from legacy/index.php: bubbles, confetti, feedback bubble. */
+/** Visual effects: bubbles, confetti, celebration overlay. */
+import { isCalm } from './prefs.js';
 
 const COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF', '#C9B1FF', '#FFB347'];
 
@@ -20,7 +21,7 @@ export function buildBubbles(container) {
 }
 
 export function launchConfetti(fromElement) {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    if (isCalm()) {
         return;
     }
 
@@ -47,9 +48,10 @@ export function launchConfetti(fromElement) {
 }
 
 export function createFeedback(element) {
+    const text = element.querySelector('.feedback-text') ?? element;
     return {
         show(message, cls) {
-            element.textContent = message;
+            text.textContent = message;
             element.className = `feedback-msg ${cls} show`;
         },
         hide() {

@@ -1,8 +1,12 @@
 import { forgetDevice, getDevice, registerDevice, suggestDeviceName } from './device.js';
 import { buildBubbles, shake } from './effects.js';
 import { QuizEngine } from './engine.js';
+import { holdToActivate } from './hold.js';
+import { mountAllMascots } from './mascot.js';
 import { cacheMedia, mediaUrls, registerServiceWorker } from './offline.js';
 import { Outbox } from './outbox.js';
+import { applyPrefs, getPrefs, setPref } from './prefs.js';
+import { awardSticker, renderStickerBook } from './stickers.js';
 import { createSpeaker } from './tts.js';
 import { shuffle, storage, uuid } from './util.js';
 
@@ -25,6 +29,15 @@ const el = {
     deviceText: document.getElementById('deviceText'),
     deviceBtn: document.getElementById('deviceBtn'),
     exitBtn: document.getElementById('exitBtn'),
+    lockBtn: document.getElementById('lockBtn'),
+    sheet: document.getElementById('parentSheet'),
+    sheetBackdrop: document.getElementById('sheetBackdrop'),
+    sheetInfo: document.getElementById('sheetInfo'),
+    resumeBtn: document.getElementById('resumeBtn'),
+    calmToggle: document.getElementById('calmToggle'),
+    volumeRange: document.getElementById('volumeRange'),
+    stickerGrid: document.getElementById('stickerGrid'),
+    stickerCount: document.getElementById('stickerCount'),
     retryBtn: document.getElementById('retryBtn'),
     newChildBtn: document.getElementById('newChildBtn'),
 };
@@ -105,6 +118,7 @@ const engine = new QuizEngine({
     onComplete: () => {
         outbox.completeSession(currentSessionUuid);
         outbox.flush();
+        renderStickerBook(el.stickerGrid, el.stickerCount, awardSticker(setup.participantId));
         showScreen('complete');
     },
 });
@@ -397,10 +411,34 @@ el.startBtn.addEventListener('click', () => {
     startSession();
 });
 
+// ── Parent sheet (press and hold 🔒 so children can't open it by accident) ──
+function openSheet() {
+    engine.pause();
+    const child = setup.study?.participants.find((p) => p.id === setup.participantId);
+    el.sheetInfo.textContent = [child ? (child.name || child.code) : 'Anonymous child', `Age ${setup.age}`, engine.describe()]
+        .filter(Boolean).join(' · ');
+    el.calmToggle.checked = !!getPrefs().calm;
+    el.volumeRange.value = String(Math.round(getPrefs().volume * 100));
+    el.sheet.hidden = false;
+    el.sheetBackdrop.hidden = false;
+    requestAnimationFrame(() => el.sheet.classList.add('open'));
+    el.resumeBtn.focus();
+}
+
+function closeSheet() {
+    el.sheet.classList.remove('open');
+    el.sheet.hidden = true;
+    el.sheetBackdrop.hidden = true;
+}
+
+holdToActivate(el.lockBtn, openSheet);
+el.resumeBtn.addEventListener('click', closeSheet);
+el.sheetBackdrop.addEventListener('click', closeSheet);
+el.calmToggle.addEventListener('change', () => setPref('calm', el.calmToggle.checked));
+el.volumeRange.addEventListener('input', () => setPref('volume', Number(el.volumeRange.value) / 100));
+
 el.exitBtn.addEventListener('click', () => {
-    if (!window.confirm('End this session and go back to setup? Answers so far are kept.')) {
-        return;
-    }
+    closeSheet();
     engine.stop();
     outbox.abandonSession(currentSessionUuid);
     outbox.flush();
@@ -409,7 +447,7 @@ el.exitBtn.addEventListener('click', () => {
 
 el.retryBtn.addEventListener('click', () => startSession());
 
-el.newChildBtn.addEventListener('click', () => {
+holdToActivate(el.newChildBtn, () => {
     engine.stop();
     setup.participantId = null;
     el.participantSelect.value = '';
@@ -419,6 +457,8 @@ el.newChildBtn.addEventListener('click', () => {
 });
 
 // ── Init ──────────────────────────────────────────────────────
+applyPrefs();
+mountAllMascots();
 buildBubbles(document.getElementById('bubbles'));
 renderDeviceStatus();
 
@@ -435,5 +475,5 @@ registerServiceWorker();
 refreshConfigFromDevice().then(prepareOffline);
 
 window.addEventListener('load', () => {
-    setTimeout(() => el.loader.classList.add('fade-out'), 600);
+    setTimeout(() => el.loader.classList.add('fade-out'), 900);
 });

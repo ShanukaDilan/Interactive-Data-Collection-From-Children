@@ -13,7 +13,7 @@ export default defineConfig({
                     weights: [400, 600, 700, 800],
                 }),
                 bunny('Fredoka', {
-                    weights: [500, 600],
+                    weights: [500, 600, 700],
                 }),
             ],
         }),
